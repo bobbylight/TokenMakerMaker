@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="i18n"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_16"/>
+	<classpathentry kind="lib" path="lib/miglayout-3.7.1-swing-java14.jar"/>
+	<classpathentry kind="lib" path="lib/balloontip_2008-10-10.jar"/>
+	<classpathentry kind="lib" path="lib/JFlex.jar"/>
+	<classpathentry kind="lib" path="/RSyntaxTextArea/dist/rsyntaxtextarea.jar"/>
+	<classpathentry kind="lib" path="lib/fife.common.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

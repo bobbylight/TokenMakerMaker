@@ -1,0 +1,12 @@
+<MLC> {
+
+	[^hwf\\n@mlc.end.first.char@]+				{}
+	{URL}					{ int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_MULTILINE); addHyperlinkToken(temp,zzMarkedPos-1, Token.COMMENT_MULTILINE); start = zzMarkedPos; }
+	[hwf]					{}
+
+	\\n						{ addToken(start,zzStartRead-1, Token.COMMENT_MULTILINE); return firstToken; }
+	{MLCEnd}					{ yybegin(YYINITIAL); addToken(start,zzStartRead+@mlc.end.length@-1, Token.COMMENT_MULTILINE); }
+	"@mlc.end.first.char@"						{}
+	<<EOF>>					{ addToken(start,zzStartRead-1, Token.COMMENT_MULTILINE); return firstToken; }
+
+}

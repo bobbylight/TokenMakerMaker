@@ -1,0 +1,5 @@
+<CHAR> {
+	[^\\']*						{}
+	[\\']						{ yybegin(YYINITIAL); addToken(start,zzStartRead, Token.LITERAL_CHAR); }
+	<<EOF>>						{ addToken(start,zzStartRead-1, Token.LITERAL_CHAR); return firstToken; }
+}

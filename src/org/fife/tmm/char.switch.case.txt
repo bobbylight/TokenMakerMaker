@@ -1,0 +1,4 @@
+			case Token.LITERAL_CHAR:
+				state = CHAR;
+				start = text.offset;
+				break;

@@ -1,0 +1,4 @@
+			case Token.COMMENT_DOCUMENTATION:
+				state = DOCCOMMENT;
+				start = text.offset;
+				break;

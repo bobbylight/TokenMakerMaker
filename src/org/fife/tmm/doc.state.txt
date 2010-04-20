@@ -1,0 +1,12 @@
+<DOCCOMMENT> {
+
+	[^hwf\\n@doc.end.first.char@]+				{}
+	{URL}					{ int temp=zzStartRead; addToken(start,zzStartRead-1, Token.COMMENT_DOCUMENTATION); addHyperlinkToken(temp,zzMarkedPos-1, Token.COMMENT_DOCUMENTATION); start = zzMarkedPos; }
+	[hwf]					{}
+
+	\\n						{ addToken(start,zzStartRead-1, Token.COMMENT_DOCUMENTATION); return firstToken; }
+	{DocCommentEnd}			{ yybegin(YYINITIAL); addToken(start,zzStartRead+@doc.end.length@-1, Token.COMMENT_DOCUMENTATION); }
+	"@doc.end.first.char@"						{}
+	<<EOF>>					{ yybegin(YYINITIAL); addToken(start,zzEndRead, Token.COMMENT_DOCUMENTATION); return firstToken; }
+
+}
