@@ -1,11 +1,12 @@
 package org.fife.tmm;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import org.fife.ui.SpecialValueComboBox;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -20,7 +21,7 @@ class GeneralPanel extends TmmPanel {
 
 	private JTextField packageField;
 	private JTextField classNameField;
-	private JComboBox extendedClassCombo;
+	private SpecialValueComboBox extendedClassCombo;
 	private JTextArea classCommentArea;
 	private JCheckBox caseSensitiveCB;
 
@@ -37,10 +38,12 @@ class GeneralPanel extends TmmPanel {
 		packageField = new JTextField();
 		classNameField = new JTextField();
 		String[] baseClasses = {
-				"AbstractJFlexTokenMaker",
-				"AbstractJFlexCTokenMaker",
+				app.getString("TokenMakerType.CDerivedSyntax"),
+				app.getString("TokenMakerType.AllOthers"),
 		};
-		extendedClassCombo = new JComboBox(baseClasses);
+		extendedClassCombo = new SpecialValueComboBox();
+		extendedClassCombo.addSpecialItem(baseClasses[0], "AbstractJFlexCTokenMaker");
+		extendedClassCombo.addSpecialItem(baseClasses[1], "AbstractJFlexTokenMaker");
 		classCommentArea = new JTextArea(10, 50);
 		caseSensitiveCB = createCheckBox(app.getString("CaseSensitive"), true);
 
@@ -49,7 +52,7 @@ class GeneralPanel extends TmmPanel {
 		panel.add(packageField);
 		panel.add(new JLabel(app.getString("ClassName")));
 		panel.add(classNameField);
-		panel.add(new JLabel(app.getString("ExtendedClassName")));
+		panel.add(new JLabel(app.getString("TokenMakerType")));
 		panel.add(extendedClassCombo);
 		panel.add(new JLabel(app.getString("ClassComment")));
 		panel.add(new JScrollPane(classCommentArea));
@@ -65,7 +68,7 @@ class GeneralPanel extends TmmPanel {
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setClassDoc(classCommentArea.getText());
 		info.setClassName(classNameField.getText().trim());
-		info.setExtendedClass((String)extendedClassCombo.getSelectedItem());
+		info.setExtendedClass((String)extendedClassCombo.getSelectedSpecialItem());
 		info.setIgnoreCase(!caseSensitiveCB.isSelected());
 		info.setPackage(packageField.getText().trim());
 	}

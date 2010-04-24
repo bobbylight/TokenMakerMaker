@@ -114,6 +114,7 @@ class GenerateAction extends StandardAction {
 									File classDir) {
 
 		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+
 		String installDir = tmm.getInstallLocation();
 		File rstaJar = new File(installDir, "rsyntaxtextarea.jar");
 		if (!rstaJar.isFile()) { // Debugging in Eclipse
@@ -126,58 +127,54 @@ class GenerateAction extends StandardAction {
 			}
 		}
 
+		File javac = tmm.getJavac();
+		if (javac==null) { // They left javac field blank.
+			String desc = tmm.getString("Error.JavacNotConfigured");
+			String title = tmm.getString("Warning.DialogTitle");
+			JOptionPane.showMessageDialog(tmm, desc, title,
+											JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+		else if (!javac.isFile()) { // Shouldn't happen
+			String desc = tmm.getString("Error.JavacNotFile", javac.getAbsolutePath());
+			tmm.displayException(new IOException(desc));
+			return false;
+		}
+
 		boolean success = false;
 
 //		try {
 
-			String javaHome = System.getProperty("java.home");
-			String exeName = getExeName("javac");
-			File exe = new File(javaHome, "bin/" + exeName); // JDK
-			if (!exe.isFile()) {
-				exe = new File(javaHome, "../bin/" + exeName); // JRE in JDK
-			}
+			List<String> command = new ArrayList<String>();
+			command.add(javac.getAbsolutePath());
+			command.add("-classpath");
+			command.add(rstaJar.getAbsolutePath());
+			command.add("-d");
+			command.add(classDir.getAbsolutePath());
+			command.add(sourceFile);
 
-			if (!exe.isFile()) {
-				// TODO: Localize me
-				String text = "Cannot find javac.exe";
-				String title = "TokenMakerMaker - Error";
-				JOptionPane.showMessageDialog(null, text, title,
-						JOptionPane.ERROR_MESSAGE);
+			String[] args = new String[command.size()];
+			args = command.toArray(args);
+			ProcessRunner pr = new ProcessRunner(args);
+			pr.setDirectory(sourceRootDir);
+			System.out.println("Directory: " + pr.getDirectory().getAbsolutePath());
+			System.out.println("Command:   " + pr.getCommandLineString());
+			pr.run();
+			int rc = pr.getReturnCode();
+			if (rc!=0) {
+				System.err.println(pr.getStderr());
 			}
 			else {
 
-				List<String> command = new ArrayList<String>();
-				command.add(exe.getAbsolutePath());
-				command.add("-classpath");
-				command.add(rstaJar.getAbsolutePath());
-				command.add("-d");
-				command.add(classDir.getAbsolutePath());
-				command.add(sourceFile);
+				String classFilePath = sourceFile.substring(0,
+						sourceFile.lastIndexOf('.')) + ".class";
 
-				String[] args = new String[command.size()];
-				args = command.toArray(args);
-				ProcessRunner pr = new ProcessRunner(args);
-				pr.setDirectory(sourceRootDir);
-				System.out.println("Directory: " + pr.getDirectory().getAbsolutePath());
-				System.out.println("Command:   " + pr.getCommandLineString());
-				pr.run();
-				int rc = pr.getReturnCode();
-				if (rc!=0) {
-					System.err.println(pr.getStderr());
-				}
-				else {
-
-					String classFilePath = sourceFile.substring(0,
-							sourceFile.lastIndexOf('.')) + ".class";
-
-					try {
-						TesterFrame tf = new TesterFrame(tmm, classDir,
-														classFilePath);
-						tf.setVisible(true);
-					} catch (Exception e) {
-						getApplication().displayException(e);
-					}
-
+				try {
+					TesterFrame tf = new TesterFrame(tmm, classDir,
+													classFilePath);
+					tf.setVisible(true);
+				} catch (Exception e) {
+					getApplication().displayException(e);
 				}
 
 			}
@@ -218,26 +215,8 @@ class GenerateAction extends StandardAction {
 	}
 
 
-	private static final String getExeName(String root) {
-		if (osIsWindows()) {
-			root += ".exe";
-		}
-		return root;
-	}
-
-
 	private boolean massageJavaSource(File javaFile) {
 		return true;
-	}
-
-
-	/**
-	 * Returns whether the OS is Windows.
-	 *
-	 * @return Whether the OS is Windows.
-	 */
-	private static final boolean osIsWindows() {
-		return File.separatorChar=='\\';
 	}
 
 

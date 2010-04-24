@@ -1,7 +1,6 @@
 package org.fife.tmm;
 
 import java.util.ResourceBundle;
-
 import javax.swing.JMenu;
 
 
@@ -11,7 +10,7 @@ import javax.swing.JMenu;
  * @author Robert Futrell
  * @version 1.0
  */
-public class MenuBar extends org.fife.ui.app.MenuBar {
+class MenuBar extends org.fife.ui.app.MenuBar {
 
 
 	/**

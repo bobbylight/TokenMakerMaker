@@ -71,6 +71,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	private JTabbedPane tp;
 	private RTextFileChooser chooser;
 
+	private File javac;
 	private File sourceOutputDir;
 	private File classOutputDir;
 
@@ -297,6 +298,19 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 
 	/**
+	 * Returns the location of the "javac.exe" compiler to use to compile the
+	 * generated .java file.
+	 *
+	 * @return The Java compiler location, or <code>null</code> if none is
+	 *         configured.
+	 * @see #setJavac(File)
+	 */
+	public File getJavac() {
+		return javac;
+	}
+
+
+	/**
 	 * Returns the directory in which generated source files (*.flex, *.java)
 	 * should be placed).
 	 *
@@ -386,6 +400,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 		// Load our preferences
 		Prefs p = (Prefs)prefs;
+		setJavac(p.javac);
 		setSourceOutputDirectory(p.outputDir);
 		setClassOutputDirectory(p.classOutputDir);
 
@@ -440,6 +455,17 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 */
 	public void setClassOutputDirectory(File dir) {
 		this.classOutputDir = dir;
+	}
+
+
+	/**
+	 * Sets the location of the Java compiler.
+	 *
+	 * @param javac The Java compiler location, or <code>null</code> for none.
+	 * @see #getJavac()
+	 */
+	public void setJavac(File javac) {
+		this.javac = javac;
 	}
 
 

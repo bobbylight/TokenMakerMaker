@@ -212,7 +212,7 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 	 */
 	public void setVisible(boolean visible) {
 		if (visible) {
-			textField.requestFocus();
+			textField.requestFocusInWindow();
 		}
 		super.setVisible(visible);
 	}
