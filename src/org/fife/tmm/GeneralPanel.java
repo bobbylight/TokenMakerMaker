@@ -68,7 +68,7 @@ class GeneralPanel extends TmmPanel {
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setClassDoc(classCommentArea.getText());
 		info.setClassName(classNameField.getText().trim());
-		info.setExtendedClass((String)extendedClassCombo.getSelectedSpecialItem());
+		info.setExtendedClass(extendedClassCombo.getSelectedSpecialItem());
 		info.setIgnoreCase(!caseSensitiveCB.isSelected());
 		info.setPackage(packageField.getText().trim());
 	}
