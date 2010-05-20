@@ -80,13 +80,14 @@ public class Prefs extends GUIApplicationPreferences {
 
 		}
 
-		if (javac.isFile()) {
+		if (javac!=null && javac.isFile()) {
 			try {
 				javac = javac.getCanonicalFile();
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 		}
+
 		return javac;
 
 	}
