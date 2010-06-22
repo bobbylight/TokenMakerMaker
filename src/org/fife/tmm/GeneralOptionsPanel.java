@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -54,6 +55,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		JPanel temp = new JPanel(new MigLayout("wrap 3", "[][grow,fill][]"));
 		temp.setBorder(new OptionPanelBorder(app.getString("Options.General.JDK")));
 		SelectableLabel sl = new SelectableLabel(app.getString("Options.General.JDK.Desc"));
+		sl.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		temp.add(sl, "span 3,growx");
 		JLabel label = new JLabel(app.getString("Options.General.JavacLocation"));
 		temp.add(label);
