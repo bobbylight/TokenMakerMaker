@@ -220,7 +220,6 @@ Separator					= ([\(\)\{\}\[\]])
 Separator2				= ([\;,.])
 
 Identifier				= ({IdentifierStart}{IdentifierPart}*)
-ErrorIdentifier			= ({NonSeparator}+)
 
 URLGenDelim				= ([:\/\?#\[\]@])
 URLSubDelim				= ([\!\$&'\(\)\*\+,;=])
@@ -277,8 +276,6 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 	{HexLiteral}					{ addToken(Token.LITERAL_NUMBER_HEXADECIMAL); }
 	{FloatLiteral}					{ addToken(Token.LITERAL_NUMBER_FLOAT); }
 	{ErrorNumberFormat}				{ addToken(Token.ERROR_NUMBER_FORMAT); }
-
-	{ErrorIdentifier}				{ addToken(Token.ERROR_IDENTIFIER); }
 
 	/* Ended with a line not in a string or comment. */
 	<<EOF>>						{ addNullToken(); return firstToken; }
