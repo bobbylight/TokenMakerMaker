@@ -114,7 +114,7 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 	/**
 	 * Called when an event occurs in this dialog.
 	 *
-	 * @param The event.
+	 * @param e The event.
 	 */
 	public void actionPerformed(ActionEvent e) {
 
