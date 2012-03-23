@@ -22,6 +22,7 @@ import org.fife.ui.RButton;
 import org.fife.ui.SelectableLabel;
 import org.fife.ui.UIUtil;
 import org.fife.ui.rtextfilechooser.RDirectoryChooser;
+import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 
 /**
@@ -36,6 +37,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	private FSATextField javacField;
 	private FSATextField sourceDirField;
 	private FSATextField classDirField;
+	private RTextFileChooser fileChooser;
 	private RDirectoryChooser dirChooser;
 	private Listener listener;
 
@@ -106,9 +108,8 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		String command = e.getActionCommand();
 
 		if ("JavacLocation.Browse".equals(command)) {
-//			if (fileChooser==null) {
-//				filechooser = new RTextFileChooser();
-//			}
+			handleBrowseForJavac();
+			return;
 		}
 
 		else if ("SourceOutputDir.Browse".equals(command)) {
@@ -219,6 +220,24 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	@Override
 	public JComponent getTopJComponent() {
 		return javacField;
+	}
+
+
+	private void handleBrowseForJavac() {
+
+		if (fileChooser==null) {
+			fileChooser = new RTextFileChooser();
+		}
+		fileChooser.setCurrentDirectory(javacField.getText());
+		int rc = fileChooser.showOpenDialog(getOptionsDialog());
+
+		if (rc==RTextFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			javacField.setText(file.getAbsolutePath());
+			//TODO: Use balloon tip if file is invalid
+			//ensureValidFile(javacField);
+		}
+
 	}
 
 

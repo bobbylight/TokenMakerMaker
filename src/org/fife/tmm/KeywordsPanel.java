@@ -19,7 +19,7 @@ import org.fife.ui.UIUtil;
  */
 class KeywordsPanel extends TmmPanel {
 
-	private WordsTable keywordsTable;
+	protected WordsTable keywordsTable;
 
 
 	/**

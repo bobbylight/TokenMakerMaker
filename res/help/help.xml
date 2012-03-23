@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<HelpDialogContents>
+
+   <PropertiesFile name="help.properties"/>
+   
+   <RootNode name="rootNodeKey" visible="true" page="index.html">
+   </RootNode>
+   
+   <IndexItems>
+      <IndexItem name="RSyntaxTextArea"/>
+      <IndexItem name="TokenMaker"/>
+   </IndexItems>
+   
+</HelpDialogContents>

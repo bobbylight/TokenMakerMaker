@@ -61,6 +61,7 @@ public class TokenMakerInfo {
 	private String docCommentEnd;
 
 	private List<String> keywords;
+	private List<String> keywords2;
 	private List<String> dataTypes;
 	private List<String> functions;
 	private List<String> operators;
@@ -98,6 +99,7 @@ public class TokenMakerInfo {
 	private static final String ELEM_IGNORE_CASE		= "ignoreCase";
 	private static final String ELEM_KEYWORD			= "keyword";
 	private static final String ELEM_KEYWORDS			= "keywords";
+	private static final String ELEM_KEYWORDS_2			= "keywords2";
 	private static final String ELEM_MLC				= "multiLineComments";
 	private static final String ELEM_LINE_COMMENT		= "lineComments";
 	private static final String ELEM_OPERATOR			= "operator";
@@ -255,6 +257,17 @@ System.out.println("Done");
 			keywords.append("/* No keywords */");
 		}
 		flexValuesMap.put("keywords", keywords.toString());
+
+		StringBuilder keywords2 = new StringBuilder();
+		List<String> keyword2List = getKeywords2();
+		if (keyword2List!=null && keyword2List.size()>0) {
+			appendFromModel(keywords2, keyword2List);
+			keywords2.append("		{ addToken(Token.RESERVED_WORD_2); }");
+		}
+		else {
+			keywords2.append("/* No keywords 2 */");
+		}
+		flexValuesMap.put("keywords2", keywords2.toString());
 
 		StringBuilder dataTypes = new StringBuilder();
 		List<String> dtList = getDataTypes();
@@ -436,6 +449,11 @@ System.out.println("Done");
 	}
 
 
+	public List<String> getKeywords2() {
+		return keywords2;
+	}
+
+
 	public boolean getLineCommentsEnabled() {
 		return lineCommentsEnabled;
 	}
@@ -549,6 +567,10 @@ System.out.println("Done");
 				}
 
 				else if (ELEM_KEYWORDS.equals(elemName)) {
+					info.setKeywords(getChildElemTexts(elem, ELEM_KEYWORD));
+				}
+
+				else if (ELEM_KEYWORDS_2.equals(elemName)) {
 					info.setKeywords(getChildElemTexts(elem, ELEM_KEYWORD));
 				}
 
@@ -740,6 +762,14 @@ System.out.println("Done");
 			temp.setTextContent(keyword);
 			keywordsElem.appendChild(temp);
 		}
+		keywordsElem = doc.createElement(ELEM_KEYWORDS_2);
+		root.appendChild(keywordsElem);
+		List<String> keywords2 = getKeywords2();
+		for (String keyword : keywords2) {
+			Element temp = doc.createElement(ELEM_KEYWORD);
+			temp.setTextContent(keyword);
+			keywordsElem.appendChild(temp);
+		}
 
 		// Store data types
 		Element dtElem = doc.createElement(ELEM_DATA_TYPES);
@@ -871,6 +901,11 @@ System.out.println("Done");
 
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
+	}
+
+
+	public void setKeywords2(List<String> keywords2) {
+		this.keywords2 = keywords2;
 	}
 
 

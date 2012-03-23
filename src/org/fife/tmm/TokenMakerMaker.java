@@ -12,6 +12,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -37,6 +41,7 @@ import org.fife.ui.rtextfilechooser.filters.ExtensionFileFilter;
 
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.styles.RoundedBalloonStyle;
+import net.java.balloontip.utils.FadingUtils;
 import net.java.balloontip.utils.TimingUtils;
 
 
@@ -61,6 +66,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	private File javac;
 	private File sourceOutputDir;
 	private File classOutputDir;
+	private HelpDialog helpDialog;
 
 	private static final String VERSION = "1.0";
 
@@ -187,6 +193,9 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		panel = new KeywordsPanel(this);
 		tp.add(getString("Tab.Keywords"), panel.panel);
 
+		panel = new Keywords2Panel(this);
+		tp.add(getString("Tab.Keywords2"), panel.panel);
+
 		panel = new DataTypesPanel(this);
 		tp.add(getString("Tab.DataTypes"), panel.panel);
 
@@ -279,8 +288,16 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 	@Override
 	public HelpDialog getHelpDialog() {
-		// TODO Auto-generated method stub
-		return null;
+		if (helpDialog==null) {
+			String baseDir = getInstallLocation() + "/help/";
+			if (!new File(baseDir).isDirectory()) { // Debugging in Eclipse
+				baseDir = getInstallLocation() + "/res/help/";
+			}
+			String contentsFile = baseDir + "help.xml";
+			helpDialog = new HelpDialog(this, contentsFile, baseDir);
+		}
+		helpDialog.setLocationRelativeTo(this);
+		return helpDialog;
 	}
 
 
@@ -469,15 +486,26 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 
 	private void showBalloonTip(JComponent parent, String text) {
-		BalloonTip tip = new BalloonTip(parent, text);
-		tip.enableClickToClose(true);
+		final BalloonTip tip = new BalloonTip(parent, text);
+		tip.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				ActionListener al = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						tip.closeBalloon();
+					}
+				};
+				FadingUtils.fadeOutBalloon(tip, al, 400, 20);
+			}
+		});
 		Color bg = UIManager.getColor("ToolTip.background");
 		if (bg==null) {
 			bg = SystemColor.info;
 		}
 		Color border = Color.BLACK;
 		tip.setStyle(new RoundedBalloonStyle(5, 5, bg, border));
-		TimingUtils.showTimedBalloon(tip, Integer.valueOf(5000));
+		TimingUtils.showTimedBalloon(tip, 5000);
+		//FadingUtils.fadeInBalloon(tip, null, 400, 20);
 	}
 
 

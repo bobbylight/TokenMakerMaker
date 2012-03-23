@@ -1,5 +1,6 @@
 package org.fife.tmm;
 
+import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,15 +29,11 @@ class TmmAboutDialog extends AboutDialog implements HyperlinkListener {
 
 
 	protected JPanel createAboutApplicationPanel() {
-
 		JPanel panel = UIUtil.createTabbedPanePanel();
 		panel.setBorder(UIUtil.getEmpty5Border());
-
-		JEditorPane textArea = createTextArea();
-		panel.add(textArea);
-
+		panel.setLayout(new BorderLayout());
+		panel.add(createTextArea(), BorderLayout.LINE_START);
 		return panel;
-
 	}
 
 
@@ -45,14 +42,14 @@ class TmmAboutDialog extends AboutDialog implements HyperlinkListener {
 		// TODO: Localize me
 		String text = "<html><h2>TokenMakerMaker</h2>" +
 		"Allows the creation of syntax highlighters for RSyntaxTextArea.<p>" +
-		"Copyright 2010 Robert Futrell<br>" +
+		"Copyright 2012 Robert Futrell<br>" +
 		"Licensed under the <a href='http://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22New_BSD_License.22_or_.22Modified_BSD_License.22.29'>Modified BSD</a> liense<p>" +
 		"Libraries used:" +
-		"<ul>" +
-		"<li>JFlex - <a href='http://jflex.de'>http://jflex.de</a>" +
-		"<li>RText - <a href='http://fifesoft.com/rtext'>http://fifesoft.com/rtext</a>" +
-		"<li>MigLayout - <a href='http://miglayout.com'>http://miglayout.com</a>" +
-		"<li>BalloonTips - <a href='https://balloontip.dev.java.net/'>https://balloontip.dev.java.net</a>" +
+		"<table style='margin-left: 12px;'>" +
+		"<tr><td>&bull; JFlex - </td><td><a href='http://jflex.de'>http://jflex.de</a></td></tr>" +
+		"<tr><td>&bull; RText - </td><td><a href='http://fifesoft.com/rtext'>http://fifesoft.com/rtext</a></td></tr>" +
+		"<tr><td>&bull; MigLayout - </td><td><a href='http://miglayout.com'>http://miglayout.com</a></td></tr>" +
+		"<tr><td>&bull; BalloonTips - </td><td><a href='https://balloontip.dev.java.net/'>https://balloontip.dev.java.net</a></td></tr>" +
 		"</ul>";
 
 		SelectableLabel label = new SelectableLabel(text);

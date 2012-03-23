@@ -56,7 +56,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org/fife/tmm/Main"/>
-				<attribute name="Class-Path" value="balloontip_2008-10-10.jar fife.common.jar JFlex.jar miglayout-3.7.1-swing-java14.jar rsyntaxtextarea.jar"/>
+				<attribute name="Class-Path" value="balloontip-1.2.1.jar fife.common.jar JFlex.jar miglayout-3.7.1-swing-java14.jar rsyntaxtextarea.jar"/>
 				<attribute name="Specification-Title" value="TokenMakerMaker"/>
 				<attribute name="Specification-Version" value="${version}"/>
 				<attribute name="Implementation-Title" value="org.fife.tmm"/>

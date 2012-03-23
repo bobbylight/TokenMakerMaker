@@ -243,6 +243,9 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 	/* Keywords */
 	@keywords@
 
+	/* Keywords 2 (just an optional set of keywords colored differently) */
+	@keywords2@
+
 	/* Data types */
 	@data.types@
 

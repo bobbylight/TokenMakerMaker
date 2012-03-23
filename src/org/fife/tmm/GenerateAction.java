@@ -196,7 +196,7 @@ class GenerateAction extends StandardAction {
 		String installDir = tmm.getInstallLocation();
 		File skeletonFile = new File(installDir, "skeleton.default");
 		if (!skeletonFile.isFile()) { // Debugging in Eclipse
-			skeletonFile = new File(installDir, "extra/skeleton.default");
+			skeletonFile = new File(installDir, "res/skeleton.default");
 		}
 		String[] args = { flexFile.getAbsolutePath(), "-d", outputDir,
 							"--skel", skeletonFile.getAbsolutePath() };
