@@ -61,6 +61,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	public static final String SAVE_ACTION_KEY				= "SaveAction";
 
 	private JTabbedPane tp;
+	private OutputPanel outputPanel;
 	private RTextFileChooser chooser;
 
 	private File javac;
@@ -208,6 +209,9 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		panel = new StringLexingPanel(this);
 		tp.add(getString("Tab.Strings"), panel.panel);
 
+		outputPanel = new OutputPanel(this);
+		tp.add(getString("Tab.Output"), outputPanel.panel);
+
 		return tp;
 
 	}
@@ -249,6 +253,12 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 		System.exit(0);
 
+	}
+
+
+	public void focusAndClearOutputTab() {
+		tp.setSelectedIndex(tp.getTabCount() - 1);
+		outputPanel.clear();
 	}
 
 
@@ -311,6 +321,11 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 */
 	public File getJavac() {
 		return javac;
+	}
+
+
+	public OutputPanel getOutputPanel() {
+		return outputPanel;
 	}
 
 

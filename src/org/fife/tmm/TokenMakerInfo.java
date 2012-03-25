@@ -144,7 +144,6 @@ public class TokenMakerInfo {
 		r.close();
 		w.close();
 
-System.out.println("Done");
 		return file;
 
 	}
@@ -571,7 +570,7 @@ System.out.println("Done");
 				}
 
 				else if (ELEM_KEYWORDS_2.equals(elemName)) {
-					info.setKeywords(getChildElemTexts(elem, ELEM_KEYWORD));
+					info.setKeywords2(getChildElemTexts(elem, ELEM_KEYWORD));
 				}
 
 				else if (ELEM_DATA_TYPES.equals(elemName)) {
