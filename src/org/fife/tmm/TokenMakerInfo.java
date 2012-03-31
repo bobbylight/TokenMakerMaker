@@ -50,6 +50,7 @@ public class TokenMakerInfo {
 	private String extendedClass;
 	private String classDoc;
 	private boolean ignoreCase;
+	private boolean booleanLiterals;
 
 	private boolean lineCommentsEnabled;
 	private String lineCommentStart;
@@ -97,6 +98,7 @@ public class TokenMakerInfo {
 	private static final String ELEM_FUNCTIONS			= "functions";
 	private static final String ELEM_GENERAL			= "general";
 	private static final String ELEM_IGNORE_CASE		= "ignoreCase";
+	private static final String ELEM_BOOLEAN_LITERALS	= "booleanLiterals";
 	private static final String ELEM_KEYWORD			= "keyword";
 	private static final String ELEM_KEYWORDS			= "keywords";
 	private static final String ELEM_KEYWORDS_2			= "keywords2";
@@ -129,10 +131,21 @@ public class TokenMakerInfo {
 
 		createFlexValuesMap();
 
+		// Write .flex file into source directory, including package
+		String subdir = getPackage();
+		if (subdir!=null) {
+			subdir = subdir.replace('.', '/');
+			outputDir = new File(outputDir, subdir);
+			if (!outputDir.isDirectory() && !outputDir.mkdirs()) {
+				throw new IOException("Can't create output directory: " +
+						outputDir.getAbsolutePath());
+			}
+		}
+
 		File file = new File(outputDir, getClassName() + ".flex");
 		PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(file)), true);
 
-		InputStream in = getClass().getClassLoader().getResourceAsStream("org/fife/tmm/Template.flex");
+		InputStream in = getClass().getResourceAsStream("Template.flex");
 		BufferedReader r = new BufferedReader(new InputStreamReader(in));
 
 		String line = null;
@@ -164,6 +177,11 @@ public class TokenMakerInfo {
 
 		flexValuesMap.put("possibly.ignore.case", getIgnoreCase() ?
 							"%ignorecase" : "/* Case sensitive */");
+
+		flexValuesMap.put("possible.booleanLiteral.macro",
+				getBooleanLiterals() ? "BooleanLiteral				= (\"true\"|\"false\")" : "");
+		flexValuesMap.put("possible.booleanLiteral.state",
+				getBooleanLiterals() ? "{BooleanLiteral}			{ addToken(Token.LITERAL_BOOLEAN); }" : "");
 
 		if (getMultilineCommentsEnabled()) {
 			String mlcStart = getMultilineCommentStart();
@@ -371,6 +389,11 @@ public class TokenMakerInfo {
 	}
 
 
+	public boolean getBooleanLiterals() {
+		return booleanLiterals;
+	}
+
+
 	public boolean getCharsEnabled() {
 		return charsEnabled;
 	}
@@ -541,11 +564,13 @@ public class TokenMakerInfo {
 					String extended = getChildElemText(elem, ELEM_EXTENDED_CLASS);
 					String classDoc = getChildElemText(elem, ELEM_CLASS_COMMENT);
 					boolean ignoreCase = Boolean.parseBoolean(getChildElemText(elem, ELEM_IGNORE_CASE));
+					boolean booleanLiterals = Boolean.parseBoolean(getChildElemText(elem, ELEM_BOOLEAN_LITERALS));
 					info.setPackage(pkg);
 					info.setClassName(className);
 					info.setExtendedClass(extended);
 					info.setClassDoc(classDoc);
 					info.setIgnoreCase(ignoreCase);
+					info.setBooleanLiterals(booleanLiterals);
 				}
 
 				else if (ELEM_COMMENTS.equals(elemName)) {
@@ -719,6 +744,9 @@ public class TokenMakerInfo {
 		tempElem = doc.createElement(ELEM_IGNORE_CASE);
 		generalElem.appendChild(tempElem);
 		tempElem.setTextContent(Boolean.toString(getIgnoreCase()));
+		tempElem = doc.createElement(ELEM_BOOLEAN_LITERALS);
+		generalElem.appendChild(tempElem);
+		tempElem.setTextContent(Boolean.toString(getBooleanLiterals()));
 
 		// Store main comment info.
 		Element commentsElem = doc.createElement(ELEM_COMMENTS);
@@ -840,6 +868,11 @@ public class TokenMakerInfo {
 
 	public void setBackticksEnabled(boolean enabled) {
 		backticksEnabled = enabled;
+	}
+
+
+	public void setBooleanLiterals(boolean booleanLiterals) {
+		this.booleanLiterals = booleanLiterals;
 	}
 
 

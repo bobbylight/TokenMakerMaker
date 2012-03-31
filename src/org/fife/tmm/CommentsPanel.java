@@ -89,19 +89,55 @@ class CommentsPanel extends TmmPanel {
 	}
 
 
+	private static final int getIndexOf(Container parent, Component c) {
+		for (int i=0; i<parent.getComponentCount(); i++) {
+			if (parent.getComponent(i)==c) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		lineCommentsEnabledCB.setSelected(info.getLineCommentsEnabled());
+		updateCheckBoxChildrenEnabledStates(lineCommentsEnabledCB);
 		lineCommentStartField.setText(info.getLineCommentStart());
 		mlcsEnabledCB.setSelected(info.getMultilineCommentsEnabled());
+		updateCheckBoxChildrenEnabledStates(mlcsEnabledCB);
 		mlcStartDelimField.setText(info.getMultilineCommentStart());
 		mlcEndDelimField.setText(info.getMultilineCommentEnd());
 		docCommentsEnabledCB.setSelected(info.getDocCommentsEnabled());
+		updateCheckBoxChildrenEnabledStates(docCommentsEnabledCB);
 		docStartDelimField.setText(info.getDocCommentStart());
 		docEndDelimField.setText(info.getDocCommentEnd());
+	}
+
+
+	private static final void updateCheckBoxChildrenEnabledStates(JCheckBox cb) {
+		boolean enabled = cb.isSelected();
+		Container parent = cb.getParent();
+		int index = getIndexOf(parent, cb);
+		if (index>-1) { // Always true
+			for (int i=index+1; i<parent.getComponentCount(); i++) {
+				Component next = parent.getComponent(i);
+				if (next instanceof Divider) {
+					break;
+				}
+				else {
+					if (next instanceof JComponent) {
+						JComponent jc = (JComponent)next;
+						if (Boolean.TRUE==jc.getClientProperty(DONT_ENABLE)) {
+							continue;
+						}
+					}
+					next.setEnabled(enabled);
+				}
+			}
+		}
 	}
 
 
@@ -156,36 +192,8 @@ class CommentsPanel extends TmmPanel {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() instanceof JCheckBox) {
 				JCheckBox cb = (JCheckBox)e.getSource();
-				boolean enabled = cb.isSelected();
-				Container parent = cb.getParent();
-				int index = getIndexOf(parent, cb);
-				if (index>-1) { // Always true
-					for (int i=index+1; i<parent.getComponentCount(); i++) {
-						Component next = parent.getComponent(i);
-						if (next instanceof Divider) {
-							break;
-						}
-						else {
-							if (next instanceof JComponent) {
-								JComponent jc = (JComponent)next;
-								if (Boolean.TRUE==jc.getClientProperty(DONT_ENABLE)) {
-									continue;
-								}
-							}
-							next.setEnabled(enabled);
-						}
-					}
-				}
+				updateCheckBoxChildrenEnabledStates(cb);
 			}
-		}
-
-		private final int getIndexOf(Container parent, Component c) {
-			for (int i=0; i<parent.getComponentCount(); i++) {
-				if (parent.getComponent(i)==c) {
-					return i;
-				}
-			}
-			return -1;
 		}
 
 	}

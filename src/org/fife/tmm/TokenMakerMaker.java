@@ -1,7 +1,7 @@
 /*
  * 07/19/2009
  *
- * TokenMakerMaker.java - Entry point for token maker program.
+ * TokenMakerMaker.java - The main application window.
  * 
  * This library is distributed under a modified BSD license.  See the included
  * RSyntaxTextArea.License.txt file for details.
@@ -431,6 +431,8 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		temp.add(new RButton(getAction(GENERATE_ACTION_KEY)));
 		buttonPanel.add(temp);
 		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+		setTitle(getString("Window.Title"));
 
 	}
 

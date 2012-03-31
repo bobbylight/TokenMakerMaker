@@ -157,7 +157,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 	 *
 	 * @param reader   the new input stream 
 	 */
-	public final void yyreset(java.io.Reader reader) {
+	public final void yyreset(Reader reader) {
 		// 's' has been updated.
 		zzBuffer = s.array;
 		/*
@@ -214,7 +214,7 @@ FloatLiteral2				= ("."{Digit}+({FloatHelper1}|{FloatHelper2}))
 FloatLiteral3				= ({Digit}+{FloatHelper2})
 FloatLiteral				= ({FloatLiteral1}|{FloatLiteral2}|{FloatLiteral3}|({Digit}+[fFdD]))
 ErrorNumberFormat			= (({IntegerLiteral}|{HexLiteral}|{FloatLiteral}){NonSeparator}+)
-BooleanLiteral				= ("true"|"false")
+@possible.booleanLiteral.macro@
 
 Separator					= ([\(\)\{\}\[\]])
 Separator2				= ([\;,.])
@@ -251,6 +251,8 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 
 	/* Functions */
 	@functions@
+
+	@possible.booleanLiteral.state@
 
 	{LineTerminator}				{ addNullToken(); return firstToken; }
 

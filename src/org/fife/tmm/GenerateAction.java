@@ -62,6 +62,8 @@ class GenerateAction extends StandardAction {
 		}
 
 		// Create the .flex input file.
+		String text = tmm.getString("Output.GeneratingFlexSource");
+		tmm.getOutputPanel().appendOutput(text, false);
 		File flexFile = null;
 		try {
 			flexFile = tmi.createFlexFile(outputDir);
@@ -71,6 +73,7 @@ class GenerateAction extends StandardAction {
 		if (flexFile==null) {
 			return;
 		}
+		tmm.getOutputPanel().appendOutput("", false);
 
 		// Use JFlex to create the .java source from the .flex file.
 		generateJavaSource(flexFile);
@@ -198,9 +201,7 @@ class GenerateAction extends StandardAction {
 		if (pkg!=null) {
 			// Use "/" instead of File.separator so we can also use it as a
 			// class name later
-			pkg = pkg.replaceAll("\\.", "/");
-			// Use "/" instead of File.separator so we can also use it as a
-			// class name later
+			pkg = pkg.replace('.', '/');
 			sourceFile = pkg + "/" + sourceFile;
 		}
 

@@ -1,3 +1,11 @@
+/*
+ * 07/19/2009
+ *
+ * Main.java - Application entry point.
+ * 
+ * This library is distributed under a modified BSD license.  See the included
+ * RSyntaxTextArea.License.txt file for details.
+ */
 package org.fife.tmm;
 
 import javax.swing.SwingUtilities;

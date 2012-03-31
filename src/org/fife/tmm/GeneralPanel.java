@@ -24,6 +24,7 @@ class GeneralPanel extends TmmPanel {
 	private SpecialValueComboBox extendedClassCombo;
 	private JTextArea classCommentArea;
 	private JCheckBox caseSensitiveCB;
+	private JCheckBox booleanLiteralCB;
 
 
 	/**
@@ -46,6 +47,7 @@ class GeneralPanel extends TmmPanel {
 		extendedClassCombo.addSpecialItem(baseClasses[1], "AbstractJFlexTokenMaker");
 		classCommentArea = new JTextArea(10, 50);
 		caseSensitiveCB = createCheckBox(app.getString("CaseSensitive"), true);
+		booleanLiteralCB = createCheckBox(app.getString("BooleanLiterals"), false);
 
 		panel.setLayout(new MigLayout("wrap 2", "[][grow,fill]"));
 		panel.add(new JLabel(app.getString("Package")));
@@ -57,6 +59,7 @@ class GeneralPanel extends TmmPanel {
 		panel.add(new JLabel(app.getString("ClassComment")));
 		panel.add(new JScrollPane(classCommentArea));
 		panel.add(caseSensitiveCB, "span 2,growx");
+		panel.add(booleanLiteralCB, "span 2,growx");
 
 	}
 
@@ -70,6 +73,7 @@ class GeneralPanel extends TmmPanel {
 		info.setClassName(classNameField.getText().trim());
 		info.setExtendedClass(extendedClassCombo.getSelectedSpecialItem());
 		info.setIgnoreCase(!caseSensitiveCB.isSelected());
+		info.setBooleanLiterals(booleanLiteralCB.isSelected());
 		info.setPackage(packageField.getText().trim());
 	}
 
@@ -84,6 +88,7 @@ class GeneralPanel extends TmmPanel {
 		extendedClassCombo.setSelectedItem(info.getExtendedClass());
 		classCommentArea.setText(info.getClassDoc());
 		caseSensitiveCB.setSelected(!info.getIgnoreCase());
+		booleanLiteralCB.setSelected(info.getBooleanLiterals());
 	}
 
 
