@@ -24,6 +24,7 @@ class SaveAction extends StandardAction {
 	 */
 	public SaveAction(TokenMakerMaker app) {
 		super(app, app.getResourceBundle(), "Save");
+		setIcon(app.getIcon("/save.gif"));
 	}
 
 

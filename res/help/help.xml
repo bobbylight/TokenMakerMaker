@@ -5,6 +5,7 @@
    <PropertiesFile name="help.properties"/>
    
    <RootNode name="rootNodeKey" visible="true" page="index.html">
+      <Page name="overviewKey" page="syntax_highlighting_overview.html"/>
    </RootNode>
    
    <IndexItems>

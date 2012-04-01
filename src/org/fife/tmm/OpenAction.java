@@ -24,6 +24,7 @@ class OpenAction extends StandardAction {
 	 */
 	public OpenAction(TokenMakerMaker app) {
 		super(app, app.getResourceBundle(), "Open");
+		setIcon(app.getIcon("/open.gif"));
 	}
 
 

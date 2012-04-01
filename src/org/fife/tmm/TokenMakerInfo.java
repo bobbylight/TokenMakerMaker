@@ -854,6 +854,7 @@ public class TokenMakerInfo {
 			throw new IOException(tce);
 		}
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 		transformer.setOutputProperty(OutputKeys.ENCODING, FILE_ENCODING);
 		StreamResult result = new StreamResult(file);
 		DOMSource source = new DOMSource(doc);

@@ -19,6 +19,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -107,12 +109,14 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		addAction(SAVE_ACTION_KEY, action);
 
 		action = new OptionsAction(this);
+		action.setIcon(getIcon("/options.gif"));
 		addAction(OPTIONS_ACTION_KEY, action);
 
 		action = new ExitAction(this, msg, "Exit");
 		addAction(EXIT_ACTION_KEY, action);
 
 		action = new HelpAction(this, msg, "Help");
+		action.setIcon(getIcon("/help.gif"));
 		addAction(HELP_ACTION_KEY, action);
 
 		action = new AboutAction(this, msg, "About");
@@ -202,6 +206,9 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 		panel = new FunctionsPanel(this);
 		tp.add(getString("Tab.Functions"), panel.panel);
+
+		panel = new NumbersPanel(this);
+		tp.add(getString("Tab.Numbers"), panel.panel);
 
 		panel = new OperatorsPanel(this);
 		tp.add(getString("Tab.Operators"), panel.panel);
@@ -305,9 +312,22 @@ public class TokenMakerMaker extends AbstractGUIApplication
 			}
 			String contentsFile = baseDir + "help.xml";
 			helpDialog = new HelpDialog(this, contentsFile, baseDir);
+			helpDialog.setBackButtonIcon(getIcon("/back.gif"));
+			helpDialog.setForwardButtonIcon(getIcon("/forward.gif"));
 		}
 		helpDialog.setLocationRelativeTo(this);
 		return helpDialog;
+	}
+
+
+	/**
+	 * Returns the specified icon.
+	 *
+	 * @param res The resource name.
+	 * @return The icon.
+	 */
+	public Icon getIcon(String res) {
+		return new ImageIcon(getClass().getResource(res));
 	}
 
 
