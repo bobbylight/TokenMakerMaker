@@ -61,6 +61,10 @@ public class TokenMakerInfo {
 	private String docCommentStart;
 	private String docCommentEnd;
 
+	private IntLiteralFormat intLiteralFormat;
+	private HexLiteralFormat hexLiteralFormat;
+	private FloatLiteralFormat floatLiteralFormat;
+
 	private List<String> keywords;
 	private List<String> keywords2;
 	private List<String> dataTypes;
@@ -104,6 +108,10 @@ public class TokenMakerInfo {
 	private static final String ELEM_KEYWORDS_2			= "keywords2";
 	private static final String ELEM_MLC				= "multiLineComments";
 	private static final String ELEM_LINE_COMMENT		= "lineComments";
+	private static final String ELEM_NUMBERS			= "numbers";
+	private static final String ELEM_NUMBERS_FLOAT		= "floatLiteral";
+	private static final String ELEM_NUMBERS_INT		= "intLiteral";
+	private static final String ELEM_NUMBERS_HEX		= "hexLiteral";
 	private static final String ELEM_OPERATOR			= "operator";
 	private static final String ELEM_OPERATORS			= "operators";
 	private static final String ELEM_PACKAGE			= "package";
@@ -456,13 +464,28 @@ public class TokenMakerInfo {
 	}
 
 
-	public boolean getIgnoreCase() {
-		return ignoreCase;
+	public FloatLiteralFormat getFloatLiteralFormat() {
+		return floatLiteralFormat;
 	}
 
 
 	public List<String> getFunctions() {
 		return functions;
+	}
+
+
+	public HexLiteralFormat getHexLiteralFormat() {
+		return hexLiteralFormat;
+	}
+
+
+	public boolean getIgnoreCase() {
+		return ignoreCase;
+	}
+
+
+	public IntLiteralFormat getIntLiteralFormat() {
+		return intLiteralFormat;
 	}
 
 
@@ -604,6 +627,21 @@ public class TokenMakerInfo {
 
 				else if (ELEM_FUNCTIONS.equals(elemName)) {
 					info.setFunctions(getChildElemTexts(elem, ELEM_FUNCTION));
+				}
+
+				else if (ELEM_NUMBERS.equals(elemName)) {
+					String text = getChildElemText(elem, ELEM_NUMBERS_HEX);
+					if (text!=null && text.length()>0) {
+						info.hexLiteralFormat = HexLiteralFormat.getByFormat(text);
+					}
+					text = getChildElemText(elem, ELEM_NUMBERS_INT);
+					if (text!=null && text.length()>0) {
+						info.intLiteralFormat = IntLiteralFormat.getByFormat(text);
+					}
+					text = getChildElemText(elem, ELEM_NUMBERS_FLOAT);
+					if (text!=null && text.length()>0) {
+						info.floatLiteralFormat = FloatLiteralFormat.getByFormat(text);
+					}
 				}
 
 				else if (ELEM_STRINGS.equals(elemName)) {
@@ -818,6 +856,25 @@ public class TokenMakerInfo {
 			funcElem.appendChild(temp);
 		}
 
+		// Store number formats
+		Element numberElem = doc.createElement(ELEM_NUMBERS);
+		root.appendChild(numberElem);
+		Element hexElem = doc.createElement(ELEM_NUMBERS_HEX);
+		if (hexLiteralFormat!=null) {
+			hexElem.setTextContent(hexLiteralFormat.getFormat());
+		}
+		numberElem.appendChild(hexElem);
+		Element intElem = doc.createElement(ELEM_NUMBERS_INT);
+		if (intLiteralFormat!=null) {
+			intElem.setTextContent(intLiteralFormat.getFormat());
+		}
+		numberElem.appendChild(intElem);
+		Element floatElem = doc.createElement(ELEM_NUMBERS_FLOAT);
+		if (floatLiteralFormat!=null) {
+			floatElem.setTextContent(floatLiteralFormat.getFormat());
+		}
+		numberElem.appendChild(floatElem);
+
 		// String info
 		Element stringElem = doc.createElement(ELEM_STRINGS);
 		root.appendChild(stringElem);
@@ -922,13 +979,28 @@ public class TokenMakerInfo {
 	}
 
 
+	public void setFloatLiteralFormat(FloatLiteralFormat format) {
+		this.floatLiteralFormat = format;
+	}
+
+
 	public void setFunctions(List<String> functions) {
 		this.functions = functions;
 	}
 
 
+	public void setHexLiteralFormat(HexLiteralFormat format) {
+		this.hexLiteralFormat = format;
+	}
+
+
 	public void setIgnoreCase(boolean ignore) {
 		ignoreCase = ignore;
+	}
+
+
+	public void setIntLiteralFormat(IntLiteralFormat format) {
+		this.intLiteralFormat = format;
 	}
 
 

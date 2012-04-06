@@ -1,6 +1,10 @@
 package org.fife.tmm;
 
+import java.awt.Component;
+import java.awt.Container;
+
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.fife.ui.UIUtil;
@@ -71,6 +75,16 @@ abstract class TmmPanel {
 	}
 
 
+	private static final int getIndexOf(Container parent, Component c) {
+		for (int i=0; i<parent.getComponentCount(); i++) {
+			if (parent.getComponent(i)==c) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
 	/**
 	 * Initializes this panel to display the the parameters as described
 	 * in a {@link TokenMakerInfo}.
@@ -79,6 +93,30 @@ abstract class TmmPanel {
 	 * @see #configureTokenMakerInfo(TokenMakerInfo)
 	 */
 	public abstract void initializeFrom(TokenMakerInfo info);
+
+
+	protected void updateCheckBoxChildrenEnabledStates(JCheckBox cb) {
+		boolean enabled = cb.isSelected();
+		Container parent = cb.getParent();
+		int index = getIndexOf(parent, cb);
+		if (index>-1) { // Always true
+			for (int i=index+1; i<parent.getComponentCount(); i++) {
+				Component next = parent.getComponent(i);
+				if (next instanceof Divider) {
+					break;
+				}
+				else {
+					if (next instanceof JComponent) {
+						JComponent jc = (JComponent)next;
+						if (Boolean.TRUE==jc.getClientProperty(DONT_ENABLE)) {
+							continue;
+						}
+					}
+					next.setEnabled(enabled);
+				}
+			}
+		}
+	}
 
 
 	/**
