@@ -203,17 +203,10 @@ WhiteSpace				= ([ \t\f]+)
 @possible.doc.macros@
 @possible.eol.macro@
 
-IntegerHelper1				= (({NonzeroDigit}{Digit}*)|"0")
-IntegerHelper2				= ("0"(([xX]{HexDigit}+)|({OctalDigit}*)))
-IntegerLiteral				= ({IntegerHelper1}[lL]?)
-HexLiteral				= ({IntegerHelper2}[lL]?)
-FloatHelper1				= ([fFdD]?)
-FloatHelper2				= ([eE][+-]?{Digit}+{FloatHelper1})
-FloatLiteral1				= ({Digit}+"."({FloatHelper1}|{FloatHelper2}|{Digit}+({FloatHelper1}|{FloatHelper2})))
-FloatLiteral2				= ("."{Digit}+({FloatHelper1}|{FloatHelper2}))
-FloatLiteral3				= ({Digit}+{FloatHelper2})
-FloatLiteral				= ({FloatLiteral1}|{FloatLiteral2}|{FloatLiteral3}|({Digit}+[fFdD]))
-ErrorNumberFormat			= (({IntegerLiteral}|{HexLiteral}|{FloatLiteral}){NonSeparator}+)
+@possible.int.literal.macro@
+@possible.hex.literal.macro@
+@possible.float.literal.macro@
+@possible.number.error.macro@
 @possible.booleanLiteral.macro@
 
 Separator					= ([\(\)\{\}\[\]])
@@ -277,10 +270,10 @@ URL						= (((https?|f(tp|ile))"://"|"www.")({URLCharacters}{URLEndCharacter})?)
 	@possible.operators@
 
 	/* Numbers */
-	{IntegerLiteral}				{ addToken(Token.LITERAL_NUMBER_DECIMAL_INT); }
-	{HexLiteral}					{ addToken(Token.LITERAL_NUMBER_HEXADECIMAL); }
-	{FloatLiteral}					{ addToken(Token.LITERAL_NUMBER_FLOAT); }
-	{ErrorNumberFormat}				{ addToken(Token.ERROR_NUMBER_FORMAT); }
+	@possible.int.literals@
+	@possible.hex.literals@
+	@possible.float.literals@
+	@possible.number.errors@
 
 	/* Ended with a line not in a string or comment. */
 	<<EOF>>						{ addNullToken(); return firstToken; }

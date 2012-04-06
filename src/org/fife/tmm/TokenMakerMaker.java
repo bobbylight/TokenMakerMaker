@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 
 import org.fife.help.HelpDialog;
+import org.fife.jgoodies.looks.common.ShadowPopupFactory;
 import org.fife.ui.AboutDialog;
 import org.fife.ui.CustomizableToolBar;
 import org.fife.ui.RButton;
@@ -453,6 +454,8 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
 		setTitle(getString("Window.Title"));
+
+		ShadowPopupFactory.install();
 
 	}
 

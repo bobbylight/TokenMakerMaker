@@ -63,7 +63,7 @@ class GenerateAction extends StandardAction {
 
 		// Create the .flex input file.
 		String text = tmm.getString("Output.GeneratingFlexSource");
-		tmm.getOutputPanel().appendOutput(text, false);
+		tmm.getOutputPanel().appendOutput(text, ProcessOutputType.HEADER_INFO);
 		File flexFile = null;
 		try {
 			flexFile = tmi.createFlexFile(outputDir);
@@ -73,7 +73,7 @@ class GenerateAction extends StandardAction {
 		if (flexFile==null) {
 			return;
 		}
-		tmm.getOutputPanel().appendOutput("", false);
+		tmm.getOutputPanel().appendOutput("", ProcessOutputType.FOOTER_INFO);
 
 		// Use JFlex to create the .java source from the .flex file.
 		generateJavaSource(flexFile);
@@ -135,7 +135,7 @@ class GenerateAction extends StandardAction {
 			pr.setDirectory(sourceRootDir);
 
 			String text = tmm.getString("Output.Compiling");
-			tmm.getOutputPanel().appendOutput("\n\n" + text, false);
+			tmm.getOutputPanel().appendOutput("\n\n" + text, ProcessOutputType.HEADER_INFO);
 			
 			pr.setOutputListener(new CompilingOutputListener(classDir, sourceFile));
 			Thread thread = new Thread(new ProcessRunnerRunnable(pr));
@@ -177,7 +177,7 @@ class GenerateAction extends StandardAction {
 		pr.setOutputListener(new JFlexOutputListener(flexFile));
 		Thread thread = new Thread(new ProcessRunnerRunnable(pr));
 		String text = tmm.getString("Output.GeneratingJavaSource");
-		tmm.getOutputPanel().appendOutput(text, false);
+		tmm.getOutputPanel().appendOutput(text, ProcessOutputType.HEADER_INFO);
 		thread.start();
 
 	}
@@ -235,10 +235,21 @@ class GenerateAction extends StandardAction {
 			});
 		}
 
+		/**
+		 * Invoked on the EDT when the process completes.  The default
+		 * implementation writes the process return code to the console.
+		 * Subclasses can override.
+		 *
+		 * @param p The process.
+		 * @param rc The process's return code.
+		 * @param t An exception that was thrown and caused the process to be
+		 *        forcibly terminated, or <code>null</code> if the process
+		 *        exited cleanly.
+		 */
 		protected void processCompletedEdt(Process p, int rc, Throwable t) {
 			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
 			String text = tmm.getString("Output.ProcessRC", Integer.toString(rc));
-			tmm.getOutputPanel().appendOutput(text, false);
+			tmm.getOutputPanel().appendOutput(text, ProcessOutputType.FOOTER_INFO);
 		}
 
 		@Override
@@ -246,7 +257,11 @@ class GenerateAction extends StandardAction {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
-					tmm.getOutputPanel().appendOutput(line, stderr);
+					//ProcessOutputType type = stderr ? ProcessOutputType.STDERR :
+					//	ProcessOutputType.STDOUT;
+					ProcessOutputType type = ProcessOutputType.STDOUT;
+					// JFlex always writes to stderr???
+					tmm.getOutputPanel().appendOutput(line, type);
 				}
 			});
 		}
@@ -266,8 +281,13 @@ class GenerateAction extends StandardAction {
 
 		@Override
 		protected void processCompletedEdt(Process p, int rc, Throwable t) {
+
+			super.processCompletedEdt(p, rc, t);
+			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+
 			if (rc==0) {
-				TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+				String msg = "\n\n" + tmm.getString("Output.LaunchingTesterWindow");
+				tmm.getOutputPanel().appendOutput(msg, ProcessOutputType.HEADER_INFO);
 				String classFile = sourceFile.substring(0,
 						sourceFile.lastIndexOf('.')) + ".class";
 				try {
@@ -277,6 +297,11 @@ class GenerateAction extends StandardAction {
 					getApplication().displayException(e);
 				}
 			}
+			else {
+				String error = "\n" + tmm.getString("Output.TerminalError");
+				tmm.getOutputPanel().appendOutput(error, ProcessOutputType.TERMINAL_ERROR);
+			}
+
 		}
 
 	}
@@ -293,8 +318,15 @@ class GenerateAction extends StandardAction {
 		@Override
 		protected void processCompletedEdt(Process p, int rc, Throwable t) {
 			super.processCompletedEdt(p, rc, t);
-			File javaFile = Utils.getFileWithNewExtension(flexFile, "java");
-			processGeneratedJavaSource(javaFile);
+			if (rc==0) {
+				File javaFile = Utils.getFileWithNewExtension(flexFile, "java");
+				processGeneratedJavaSource(javaFile);
+			}
+			else {
+				TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+				String error = "\n" + tmm.getString("Output.TerminalError");
+				tmm.getOutputPanel().appendOutput(error, ProcessOutputType.TERMINAL_ERROR);
+			}
 		}
 
 	}
@@ -311,7 +343,7 @@ class GenerateAction extends StandardAction {
 		public void run() {
 			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
 			String cmd = tmm.getString("Output.RunningCommand", pr.getCommandLineString());
-			tmm.getOutputPanel().appendOutput(cmd, false);
+			tmm.getOutputPanel().appendOutput(cmd, ProcessOutputType.HEADER_INFO);
 			pr.run();
 		}
 

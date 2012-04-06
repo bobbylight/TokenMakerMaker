@@ -378,6 +378,56 @@ public class TokenMakerInfo {
 			flexValuesMap.put("possible.string.switch.case", "/* No string state */");
 		}
 
+		if (intLiteralFormat!=null) {
+			flexValuesMap.put("possible.int.literal.macro", "IntegerLiteral\t\t\t= (" + intLiteralFormat.getFormat() + ")");
+			flexValuesMap.put("possible.int.literals", "{IntegerLiteral}\t\t\t\t{ addToken(Token.LITERAL_NUMBER_DECIMAL_INT); }");
+		}
+		else {
+			flexValuesMap.put("possible.int.literal.macro", "/* No int literals */");
+			flexValuesMap.put("possible.int.literals", "/* No int literals */");
+		}
+		if (hexLiteralFormat!=null) {
+			flexValuesMap.put("possible.hex.literal.macro", "HexLiteral\t\t\t= (" + hexLiteralFormat.getFormat() + ")");
+			flexValuesMap.put("possible.hex.literals", "{HexLiteral}\t\t\t\t\t{ addToken(Token.LITERAL_NUMBER_HEXADECIMAL); }");
+		}
+		else {
+			flexValuesMap.put("possible.hex.literal.macro", "/* No hex literals */");
+			flexValuesMap.put("possible.hex.literals", "/* No hex literals */");
+		}
+		if (floatLiteralFormat!=null) {
+			flexValuesMap.put("possible.float.literal.macro", "FloatLiteral\t\t\t= (" + floatLiteralFormat.getFormat() + ")");
+			flexValuesMap.put("possible.float.literals", "{FloatLiteral}\t\t\t\t\t{ addToken(Token.LITERAL_NUMBER_FLOAT); }");
+		}
+		else {
+			flexValuesMap.put("possible.float.literal.macro", "/* No float literals */");
+			flexValuesMap.put("possible.float.literals", "/* No float literals */");
+		}
+		StringBuilder sb = new StringBuilder();
+		boolean numLiterals = false;
+		if (intLiteralFormat!=null) {
+			numLiterals = true;
+			sb.append("({IntegerLiteral}");
+		}
+		if (hexLiteralFormat!=null) {
+			sb.append(numLiterals ? "|" : "(");
+			numLiterals = true;
+			sb.append("{HexLiteral}");
+		}
+		if (floatLiteralFormat!=null) {
+			sb.append(numLiterals ? "|" : "(");
+			numLiterals = true;
+			sb.append("{FloatLiteral}");
+		}
+		if (numLiterals) {
+			sb.append("){NonSeparator}+");
+			flexValuesMap.put("possible.number.error.macro", "ErrorNumberFormat\t\t\t= (" + sb.toString() + ")");
+			flexValuesMap.put("possible.number.errors", "{ErrorNumberFormat}\t\t\t{ addToken(Token.ERROR_NUMBER_FORMAT); }");
+		}
+		else {
+			flexValuesMap.put("possible.number.error.macro", "/* No number literals, so no error literal for them either */");
+			flexValuesMap.put("possible.number.errors", "/* No number error literals */");
+		}
+
 		StringBuilder operators = new StringBuilder();
 		List<String> opList = getOperators();
 		if (opList!=null && opList.size()>0) {
