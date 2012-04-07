@@ -63,9 +63,11 @@ the general usage should be self-explanatory, but here are some things to note:
      - The full path to javac (javac.exe on Windows).  If TMM is launched
        with a JDK instead of just a JRE, this should be pre-filled in.
        Otherwise, you'll have to specify one yourself.  If this is left blank,
-       then TMM will generate the .flex file for your TokenMaker, but it will
-       not be able to generate the .java, and it won't be able to launch the
-       "preview" editor to try out your TokenMakerMaker.
+       then TMM will generate the .flex and .java files for your TokenMaker,
+       but it will not be able to generate the corresponding class file, and it
+       won't be able to launch the "preview" editor to try out your TokenMaker.
+       In this case you'll be notified when clicking "Generate" about the need
+       to configure the javac location to use this functionality.
       
      - "Source output directory" is where TokenMakerMaker will place the
        generated .flex and .java files.  You can point this directly to a

@@ -6,6 +6,9 @@
    
    <RootNode name="rootNodeKey" visible="true" page="index.html">
       <Page name="overviewKey" page="syntax_highlighting_overview.html"/>
+      <Node name="userInterfaceNodeKey" page="ui.html">
+         <Page name="generalTabKey" page="general_tab.html"/>
+      </Node>
    </RootNode>
    
    <IndexItems>

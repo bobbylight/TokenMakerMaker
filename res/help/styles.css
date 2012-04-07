@@ -1,0 +1,7 @@
+/* Workaround for JEditorPane's inability to display 1px border tables. */
+.tableBackgroundDiv {
+	background-color: #000000;
+}
+td, th {
+   background-color: #ffffff;
+}

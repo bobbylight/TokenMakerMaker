@@ -106,6 +106,7 @@ class GenerateAction extends StandardAction {
 		File javac = tmm.getJavac();
 		if (javac==null) { // They left javac field blank.
 			String desc = tmm.getString("Error.JavacNotConfigured");
+			tmm.getOutputPanel().appendOutput("\n\n" + desc, ProcessOutputType.FOOTER_INFO);
 			String title = tmm.getString("Warning.DialogTitle");
 			JOptionPane.showMessageDialog(tmm, desc, title,
 											JOptionPane.WARNING_MESSAGE);
@@ -113,6 +114,7 @@ class GenerateAction extends StandardAction {
 		}
 		else if (!javac.isFile()) { // Shouldn't happen
 			String desc = tmm.getString("Error.JavacNotFile", javac.getAbsolutePath());
+			tmm.getOutputPanel().appendOutput("\n\n" + desc, ProcessOutputType.TERMINAL_ERROR);
 			tmm.displayException(new IOException(desc));
 			return false;
 		}

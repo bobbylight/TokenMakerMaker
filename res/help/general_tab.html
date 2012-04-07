@@ -1,0 +1,76 @@
+<html>
+
+   <head>
+      <link rel="stylesheet" href=styles.css></link>
+   </head>
+   
+   <body>
+   
+      <h2><nobr>General Tab</nobr></h2>
+      <hr/>
+      
+      <p>
+      The General tab allows you to enter basic information about your TokenMaker.
+      Here's a breakdown of what each field means:
+      </p>
+      <br/>
+      
+      <div class="tableBackgroundDiv">
+      <table border="0" cellpadding="2" cellspacing="1">
+      
+         <tr>
+            <th>Field</th>
+            <th>Meaning</th>
+         </tr>
+         
+         <tr>
+            <td>Package</td>
+            <td>The package for the generated class.  This can be left blank if
+                the class is to be in the default package.</td>
+         </tr>
+         
+         <tr>
+            <td>Class Name</td>
+            <td>The name of the class to generate.  By convention, this should
+                end in "TokenMaker", for example, "MyLanguageTokenMaker".</td>
+         </tr>
+         
+         <tr>
+            <td>Syntax Type</td>
+            <td>The difference between "C-derived syntax" and "All others" is that
+             the former will cause your TokenMaker to auto-indent after lines
+             ending in '{', as well as auto-align closing '}' chars when they
+             are typed (assuming auto-indent is enabled in the RSyntaxTextArea
+             it's running in).  It's supposed to be the option you want to pick
+             if the language you are creating derives syntax from C, and uses
+             curly braces to denote code blocks.</td>
+         </tr>
+         
+         <tr>
+            <td>Class Comment</td>
+            <td>Used as the Javadoc comment for the generated class.  Each line
+                is prefixed with " * " to keep the source looking pretty.</td>
+         </tr>
+         
+         <tr>
+            <td>Case-sensitive</td>
+            <td>If checked, the language is considered to be case-sensitive.
+                This means that keywords, functions, etc. are only matched if
+                they are found in the exact same case as they are specified
+                in TokenMakerMaker.</td>
+         </tr>
+         
+         <tr>
+            <td>Highlight boolean literals "true" and "false"</td>
+            <td>If checked, then the literals "true" and "false" are colorized
+                according to the RSyntaxTextArea's color scheme as boolean
+                literals.  You'll probably want to check this if your language
+                defines these boolean literals.</td>
+         </tr>
+         
+      </table>
+      </div>
+      
+   </body>
+
+</html>
