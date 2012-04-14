@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="/RSyntaxTextArea/dist/rsyntaxtextarea.jar"/>
 	<classpathentry kind="lib" path="lib/fife.common.jar"/>
 	<classpathentry kind="lib" path="lib/balloontip-1.2.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RSyntaxTextArea"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

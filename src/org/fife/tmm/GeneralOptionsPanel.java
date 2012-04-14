@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +40,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	private FSATextField classDirField;
 	private RTextFileChooser fileChooser;
 	private RDirectoryChooser dirChooser;
+	private JComboBox themeCombo;
 	private Listener listener;
 
 	private static final String PROP_DIR		= "Directory";
@@ -97,6 +99,23 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		temp.add(browseButton);
 
 		temp2.add(temp);
+		temp2.add(Box.createVerticalStrut(5));
+
+		temp = new JPanel(new MigLayout("wrap 2", "[][grow,fill]"));
+		temp.setBorder(new OptionPanelBorder(app.getString("Options.General.Rsta.Appearance")));
+		label = new JLabel(app.getString("Options.General.Rsta.Theme"));
+		temp.add(label);
+		final Object[] themeItems = {
+			new ThemeItem(app.getString("Options.General.Rsta.Theme.None"),         null),
+			new ThemeItem(app.getString("Options.General.Rsta.Theme.Default"),      "default.xml"),
+			new ThemeItem(app.getString("Options.General.Rsta.Theme.Eclipse"),      "eclipse.xml"),
+			new ThemeItem(app.getString("Options.General.Rsta.Theme.Dark"),         "dark.xml"),
+			new ThemeItem(app.getString("Options.General.Rsta.Theme.VisualStudio"), "vs.xml"),
+		};
+		themeCombo = new JComboBox(themeItems);
+		temp.add(themeCombo);
+
+		temp2.add(temp);
 		temp2.add(Box.createVerticalGlue());
 
 		add(temp2, BorderLayout.NORTH);
@@ -149,6 +168,8 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		app.setJavac(getFileFrom(javacField));
 		app.setSourceOutputDirectory(getFileFrom(sourceDirField));
 		app.setClassOutputDirectory(getFileFrom(classDirField));
+
+		app.setThemeName(((ThemeItem)themeCombo.getSelectedItem()).getTheme());
 
 	}
 
@@ -272,6 +293,20 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		}
 		classDirField.setText(outputDir.getAbsolutePath());
 
+		String themeName = app.getThemeName();
+		if (themeName!=null) {
+			for (int i=1; i<themeCombo.getItemCount(); i++) {
+				ThemeItem item = (ThemeItem)themeCombo.getItemAt(i);
+				if (themeName.equals(item.getTheme())) {
+					themeCombo.setSelectedIndex(i);
+					return;
+				}
+			}
+		}
+		else {
+			themeCombo.setSelectedIndex(0);
+		}
+
 	}
 
 
@@ -294,6 +329,30 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		public void removeUpdate(DocumentEvent e) {
 			setUnsavedChanges(true);
 			firePropertyChange(PROP_DIR, null, sourceDirField.getText());
+		}
+
+	}
+
+
+	/**
+	 * Maps an RSTA theme to a nicer name to display in a combo box.
+	 */
+	private static class ThemeItem {
+
+		private String text;
+		private String theme;
+
+		public ThemeItem(String text, String theme) {
+			this.text = text;
+			this.theme = theme;
+		}
+
+		public String getTheme() {
+			return theme;
+		}
+
+		public String toString() {
+			return text;
 		}
 
 	}

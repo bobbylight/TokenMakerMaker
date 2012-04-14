@@ -30,7 +30,6 @@ import javax.swing.text.JTextComponent;
 
 import org.fife.help.HelpDialog;
 import org.fife.jgoodies.looks.common.ShadowPopupFactory;
-import org.fife.ui.AboutDialog;
 import org.fife.ui.CustomizableToolBar;
 import org.fife.ui.RButton;
 import org.fife.ui.SplashScreen;
@@ -70,6 +69,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	private File javac;
 	private File sourceOutputDir;
 	private File classOutputDir;
+	private String theme;
 	private HelpDialog helpDialog;
 
 	private static final String VERSION = "1.0";
@@ -85,14 +85,6 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 */
 	public TokenMakerMaker(String jarFile) {
 		super(jarFile);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected AboutDialog createAboutDialog() {
-		return new TmmAboutDialog(this);
 	}
 
 
@@ -120,7 +112,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		action.setIcon(getIcon("/help.gif"));
 		addAction(HELP_ACTION_KEY, action);
 
-		action = new AboutAction(this, msg, "About");
+		action = new org.fife.tmm.AboutAction(this);
 		addAction(ABOUT_ACTION_KEY, action);
 
 		action = new GenerateAction(this);
@@ -345,20 +337,20 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	}
 
 
-	public OutputPanel getOutputPanel() {
-		return outputPanel;
+	/**
+	 * Returns the Java binary running this application.
+	 *
+	 * @return The Java binary running this application.
+	 * @see #getJavac()
+	 */
+	public File getJavaExe() {
+		String fileName = getOS()==OS_WINDOWS ? "bin\\java.exe" : "bin/java";
+		return new File(System.getProperty("java.home"), fileName);
 	}
 
 
-	/**
-	 * Returns the directory in which generated source files (*.flex, *.java)
-	 * should be placed).
-	 *
-	 * @return The output directory.
-	 * @see #setSourceOutputDirectory(File)
-	 */
-	public File getSourceOutputDirectory() {
-		return sourceOutputDir;
+	public OutputPanel getOutputPanel() {
+		return outputPanel;
 	}
 
 
@@ -391,6 +383,30 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	@Override
 	public String getResourceBundleClassName() {
 		return BUNDLE_NAME;
+	}
+
+
+	/**
+	 * Returns the directory in which generated source files (*.flex, *.java)
+	 * should be placed).
+	 *
+	 * @return The output directory.
+	 * @see #setSourceOutputDirectory(File)
+	 */
+	public File getSourceOutputDirectory() {
+		return sourceOutputDir;
+	}
+
+
+	/**
+	 * Returns the theme to install on RSyntaxTextAreas when testing out
+	 * TokenMakers.
+	 *
+	 * @return The theme to install.
+	 * @see #setThemeName(String)
+	 */
+	public String getThemeName() {
+		return theme;
 	}
 
 
@@ -522,6 +538,18 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 */
 	public void setSourceOutputDirectory(File dir) {
 		this.sourceOutputDir = dir;
+	}
+
+
+	/**
+	 * Sets the theme to install on RSyntaxTextAreas when testing out
+	 * TokenMakers.
+	 *
+	 * @param theme The theme to install.
+	 * @see #getThemeName()
+	 */
+	public void setThemeName(String theme) {
+		this.theme = theme;
 	}
 
 

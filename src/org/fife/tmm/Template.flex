@@ -93,7 +93,7 @@ import org.fife.ui.rsyntaxtextarea.*;
 	 *         it out.
 	 */
 	public String[] getLineCommentStartAndEnd() {
-		return null;
+		@line.comment.start.end.body@
 	}
 
 

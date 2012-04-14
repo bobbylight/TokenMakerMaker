@@ -264,12 +264,14 @@ public class TokenMakerInfo {
 			flexValuesMap.put("possible.eol.check", "{LineCommentBegin}			{ start = zzMarkedPos-" + eolStartLen + "; yybegin(EOL_COMMENT); }");
 			flexValuesMap.put("possible.eol.state", loadResourceText("org/fife/tmm/eol.state.txt"));
 			flexValuesMap.put("possible.eol.state.definition", "%state EOL_COMMENT");
+			flexValuesMap.put("line.comment.start.end.body", "return new String[] { \"" + lineCommentStart + "\", null };");
 		}
 		else {
 			flexValuesMap.put("possible.eol.macro", "/* No line comments */");
 			flexValuesMap.put("possible.eol.check", "/* No line comments */");
 			flexValuesMap.put("possible.eol.state", "/* No line comment state */");
 			flexValuesMap.put("possible.eol.state.definition", "/* No line comment state */");
+			flexValuesMap.put("line.comment.start.end.body", "return null;");
 		}
 
 		StringBuilder keywords = new StringBuilder();

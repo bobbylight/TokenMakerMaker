@@ -1,6 +1,7 @@
 package org.fife.tmm;
 
 import java.awt.BorderLayout;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -10,6 +11,7 @@ import javax.swing.JPanel;
 import org.fife.ui.UIUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenMaker;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -42,6 +44,14 @@ class TesterFrame extends JFrame {
 
 		cp.setBorder(UIUtil.getEmpty5Border());
 		textArea = new RSyntaxTextArea(20, 50);
+		String themeName = app.getThemeName();
+		if (themeName!=null) {
+			BufferedInputStream bin = new BufferedInputStream(
+					getClass().getResourceAsStream("/" + themeName));
+			Theme theme = Theme.load(bin);
+			bin.close();
+			theme.apply(textArea);
+		}
 		((RSyntaxDocument)textArea.getDocument()).setSyntaxStyle(tm);
 		RTextScrollPane sp = new RTextScrollPane(textArea);
 		cp.add(sp);

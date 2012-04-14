@@ -37,7 +37,7 @@
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}"/>
 		<mkdir dir="${class-dir}"/>
 		<javac srcdir="${source-dir}" destdir="${class-dir}"
-			classpath="lib/balloontip_2008-10-10.jar;lib/fife.common.jar;lib/JFlex.jar;lib/miglayout-3.7.1-swing-java14.jar;${rsta-dir}/dist/rsyntaxtextarea.jar"
+			classpath="lib/balloontip-1.2.1.jar;lib/fife.common.jar;lib/JFlex.jar;lib/miglayout-3.7.1-swing-java14.jar;${rsta-dir}/dist/rsyntaxtextarea.jar"
 			deprecation="yes" debug="${debug}" debuglevel="${debuglevel}"
 			source="${java-level}" target="${java-level}"/>
 	</target>
@@ -50,10 +50,15 @@
 		<jar destfile="${dist-dir}/tmm.jar">
 			<fileset dir="${class-dir}"/>
 			<fileset dir="i18n"/>
+			<fileset dir="res">
+				<exclude name="help/**"/>
+				<exclude name="skeleton.default"/>
+			</fileset>
 			<fileset dir="${source-dir}">
 				<include name="**/*.txt"/>
 				<include name="**/*.flex"/>
 			</fileset>
+			<fileset dir="../RSyntaxTextArea/themes"/>
 			<manifest>
 				<attribute name="Main-Class" value="org/fife/tmm/Main"/>
 				<attribute name="Class-Path" value="balloontip-1.2.1.jar fife.common.jar JFlex.jar miglayout-3.7.1-swing-java14.jar rsyntaxtextarea.jar"/>
@@ -69,8 +74,12 @@
 	<!-- Creates the application. -->
 	<target name="make-app" depends="make-jar" description="Create the app">
 		<copy todir="${dist-dir}">
-			<fileset dir="extra"/>
+			<fileset dir="res">
+				<include name="help/**"/>
+				<include name="skeleton.default"/>
+			</fileset>
 			<fileset dir="lib"/>
+			<fileset dir="../RSyntaxTextArea/themes"/>
 			<fileset dir="${rsta-dir}/dist">
 				<include name="*.jar"/>
 				<include name="RSyntaxTextArea.License.txt"/>
@@ -83,7 +92,7 @@
 	<target name="make-source-zip" description="Builds the source zip file">
 		<zip destfile="./tmm_${version}_Source.zip">
 			<fileset dir=".">
-				<include name="extra**"/>
+				<include name="res/**"/>
 				<include name="i18n/**"/>
 				<include name="lib/**"/>
 				<include name="src/**"/>

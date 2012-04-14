@@ -168,10 +168,17 @@ class GenerateAction extends StandardAction {
 			skeletonFile = new File(installDir, "res/skeleton.default");
 		}
 
+		// Hacky, fix me - allow JFlex to be in a lib/ subdir, or in the cwd.
+		File jflexJar = new File(installDir, "lib/JFlex.jar");
+		if (!jflexJar.isFile()) {
+			jflexJar = new File(installDir, "JFlex.jar");
+		}
+
 		// Run JFlex off the EDT and collect its output as it runs.
 		// We'll parse the generated .java file afterwards.
-		String[] command = { "C:/java/jdk6.0_14/bin/java.exe", "-cp",
-				installDir + "/lib/JFlex.jar", "JFlex.Main",
+		String javaExe = tmm.getJavaExe().getAbsolutePath();
+		String[] command = { javaExe, "-cp",
+				jflexJar.getAbsolutePath(), "JFlex.Main",
 				flexFile.getAbsolutePath(), "-d", outputDir,
 				"--skel", skeletonFile.getAbsolutePath()
 		};
