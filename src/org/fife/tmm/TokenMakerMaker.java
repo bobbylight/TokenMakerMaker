@@ -423,8 +423,14 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 	@Override
 	public void openFile(String fileName) {
-		// TODO Auto-generated method stub
-
+		File file = new File(fileName);
+		try {
+			TokenMakerInfo tmi = TokenMakerInfo.load(file);
+			load(tmi);
+			((MenuBar)getJMenuBar()).addFileToFileHistory(file);
+		} catch (IOException ioe) {
+			displayException(ioe);
+		}
 	}
 
 
