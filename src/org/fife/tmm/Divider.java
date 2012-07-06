@@ -45,14 +45,13 @@ class Divider extends JComponent {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	protected void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
 
 		Graphics2D g2d = (Graphics2D)g;
 		RenderingHints old = null;
-		Map aaHints = RSyntaxUtilities.getDesktopAntiAliasHints();
+		Map<?, ?> aaHints = RSyntaxUtilities.getDesktopAntiAliasHints();
 		if (aaHints!=null) {
 			old = g2d.getRenderingHints();
 			g2d.addRenderingHints(aaHints);

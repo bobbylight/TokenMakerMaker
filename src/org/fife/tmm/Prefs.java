@@ -131,7 +131,6 @@ public class Prefs extends GUIApplicationPreferences {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void setDefaults() {
 
@@ -143,7 +142,7 @@ public class Prefs extends GUIApplicationPreferences {
 		toolbarVisible = true;
 		statusBarVisible = true;
 		language = "en";
-		accelerators = new HashMap();
+		accelerators = new HashMap<Object, Object>();
 
 		javac = getDefaultJavac();
 		outputDir = new File(DEFAULT_OUTPUT_DIR);
