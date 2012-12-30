@@ -28,7 +28,7 @@
 	<property name="dist-dir"         location="dist"/>
 	<property name="rsta-dir"         location="../RSyntaxTextArea"/>
 	<property name="debug"            value="true"/>
-	<property name="debuglevel"       value="lines,var,source"/>
+	<property name="debuglevel"       value="lines,vars,source"/>
 	<property name="java-level"       value="1.5"/>
 
 
