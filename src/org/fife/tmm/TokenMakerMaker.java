@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -31,7 +32,6 @@ import javax.swing.text.JTextComponent;
 import org.fife.help.HelpDialog;
 import org.fife.jgoodies.looks.common.ShadowPopupFactory;
 import org.fife.ui.CustomizableToolBar;
-import org.fife.ui.RButton;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.StatusBar;
 import org.fife.ui.app.AbstractGUIApplication;
@@ -471,7 +471,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 		JPanel buttonPanel = new JPanel();
 		JPanel temp = new JPanel(new GridLayout(1, 1));
-		temp.add(new RButton(getAction(GENERATE_ACTION_KEY)));
+		temp.add(new JButton(getAction(GENERATE_ACTION_KEY)));
 		buttonPanel.add(temp);
 		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 

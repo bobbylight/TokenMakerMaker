@@ -1,7 +1,7 @@
 package org.fife.tmm;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -10,14 +10,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.fife.ui.EscapableDialog;
 import org.fife.ui.FSATextField;
-import org.fife.ui.RButton;
 import org.fife.ui.ResizableFrameContentPane;
 import org.fife.ui.SelectableLabel;
 import org.fife.ui.UIUtil;
@@ -69,39 +68,20 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 		content.add(label);
 		content.add(Box.createVerticalStrut(5));
 		JLabel prompt = new JLabel(app.getString("Dialog.InsertFromFile.Prompt"));
-		if (getComponentOrientation().isLeftToRight()) {
-			prompt.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-		}
-		else {
-			prompt.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-		}
 		textField = new FSATextField(30);
-		RButton browseButton = createButton(app, "Browse");
-		JPanel temp = new JPanel(new BorderLayout());
+		JButton browseButton = createButton(app, "Browse");
+		JPanel temp = new JPanel(new BorderLayout(5, 0));
 		temp.add(prompt, BorderLayout.LINE_START);
 		temp.add(textField);
-		JPanel temp2 = new JPanel(new BorderLayout());
-		temp2.add(browseButton);
-		if (getComponentOrientation().isLeftToRight()) {
-			temp2.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-		}
-		else {
-			temp2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-		}
-		temp.add(temp2, BorderLayout.LINE_END);
+		temp.add(browseButton, BorderLayout.LINE_END);
 		content.add(temp);
 		content.add(Box.createVerticalGlue());
 		cp.add(content, BorderLayout.NORTH);
 
-		JPanel buttonPanel = new JPanel(new GridLayout(1,2, 5,5));
-		RButton okButton = createButton(app, "OK");
-		RButton cancelButton = createButton(app, "Cancel");
-		buttonPanel.add(okButton);
-		buttonPanel.add(cancelButton);
-
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.add(buttonPanel);
-		cp.add(bottomPanel, BorderLayout.SOUTH);
+		JButton okButton = createButton(app, "OK");
+		JButton cancelButton = createButton(app, "Cancel");
+		Container buttons = UIUtil.createButtonFooter(okButton, cancelButton);
+		cp.add(buttons, BorderLayout.SOUTH);
 
 		getRootPane().setDefaultButton(okButton);
 		setModal(true);
@@ -152,8 +132,8 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 	 * @param key The key for the button's text (and its action command).
 	 * @return The button.
 	 */
-	private RButton createButton(TokenMakerMaker app, String key) {
-		RButton button = new RButton(app.getString(key));
+	private JButton createButton(TokenMakerMaker app, String key) {
+		JButton button = new JButton(app.getString(key));
 		button.setActionCommand(key);
 		button.addActionListener(this);
 		return button;

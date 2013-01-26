@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -19,7 +20,6 @@ import net.miginfocom.swing.MigLayout;
 
 import org.fife.ui.FSATextField;
 import org.fife.ui.OptionsDialogPanel;
-import org.fife.ui.RButton;
 import org.fife.ui.SelectableLabel;
 import org.fife.ui.UIUtil;
 import org.fife.ui.rtextfilechooser.RDirectoryChooser;
@@ -66,7 +66,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		javacField = new FSATextField();
 		javacField.getDocument().addDocumentListener(listener);
 		temp.add(javacField);
-		RButton browseButton = new RButton(app.getString("Browse"));
+		JButton browseButton = new JButton(app.getString("Browse"));
 		browseButton.setActionCommand("JavacLocation.Browse");
 		browseButton.addActionListener(this);
 		temp.add(browseButton);
@@ -82,7 +82,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		sourceDirField.setText(app.getSourceOutputDirectory().getAbsolutePath()); // For size
 		sourceDirField.getDocument().addDocumentListener(listener);
 		temp.add(sourceDirField);
-		browseButton = new RButton(app.getString("Browse"));
+		browseButton = new JButton(app.getString("Browse"));
 		browseButton.setActionCommand("SourceOutputDir.Browse");
 		browseButton.addActionListener(this);
 		temp.add(browseButton);
@@ -93,7 +93,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		classDirField.setText(app.getClassOutputDirectory().getAbsolutePath()); // For size
 		classDirField.getDocument().addDocumentListener(listener);
 		temp.add(classDirField);
-		browseButton = new RButton(app.getString("Browse"));
+		browseButton = new JButton(app.getString("Browse"));
 		browseButton.setActionCommand("ClassOutputDir.Browse");
 		browseButton.addActionListener(this);
 		temp.add(browseButton);

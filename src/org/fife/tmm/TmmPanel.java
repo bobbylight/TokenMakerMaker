@@ -33,7 +33,7 @@ abstract class TmmPanel {
 
 	public TmmPanel(TokenMakerMaker app) {
 		this.app = app;
-		panel = UIUtil.createTabbedPanePanel();
+		panel = UIUtil.newTabbedPanePanel();
 		panel.putClientProperty(PROPERTY_TMM_PANEL, this);
 	}
 

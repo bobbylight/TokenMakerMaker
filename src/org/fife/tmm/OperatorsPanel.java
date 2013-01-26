@@ -2,9 +2,9 @@ package org.fife.tmm;
 
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.fife.ui.RButton;
 import org.fife.ui.UIUtil;
 
 
@@ -28,10 +28,10 @@ class OperatorsPanel extends TmmPanel {
 		super(app);
 		operatorsTable = new WordsTable(app, "Operator");
 		panel.setLayout(new BorderLayout());
-		JPanel temp = UIUtil.createTabbedPanePanel();
+		JPanel temp = UIUtil.newTabbedPanePanel();
 		temp.setLayout(new BorderLayout());
 		temp.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-		RButton useCOperatorsButton = new RButton(
+		JButton useCOperatorsButton = new JButton(
 						new UseCOperatorsAction(app, operatorsTable));
 		temp.add(useCOperatorsButton, BorderLayout.LINE_START);
 		panel.add(temp, BorderLayout.NORTH);

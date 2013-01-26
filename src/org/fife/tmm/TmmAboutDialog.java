@@ -15,7 +15,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -120,13 +119,8 @@ class TmmAboutDialog extends EscapableDialog {
 				new LibrariesDialog().setVisible(true);
 			}
 		});
-		JPanel buttonsPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-		buttonsPanel.add(okButton);
-		buttonsPanel.add(libButton);
-		temp = new JPanel(new BorderLayout());
-		temp.setBorder(UIUtil.getEmpty5Border());
-		temp.add(buttonsPanel, BorderLayout.LINE_END);
-		cp.add(temp, BorderLayout.SOUTH);
+		Container buttons = UIUtil.createButtonFooter(okButton, libButton);
+		cp.add(buttons, BorderLayout.SOUTH);
 
 		getRootPane().setDefaultButton(okButton);
 		setTitle(app.getString("About.ShortDesc"));

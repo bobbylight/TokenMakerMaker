@@ -7,8 +7,8 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import org.fife.ui.modifiabletable.AbstractRowHandler;
 import org.fife.ui.modifiabletable.ModifiableTable;
-import org.fife.ui.modifiabletable.RowHandler;
 
 
 /**
@@ -68,7 +68,7 @@ class WordsTable extends ModifiableTable {
 	}
 
 
-	private class KeywordRowHandler implements RowHandler {
+	private class KeywordRowHandler extends AbstractRowHandler {
 
 		private TokenMakerMaker parent;
 
@@ -93,15 +93,6 @@ class WordsTable extends ModifiableTable {
 									null : new String[] { input };
 		}
 
-		@Override
-		public boolean shouldRemoveRow(int row) {
-			return true;
-		}
-
-		@Override
-		public void updateUI() {
-		}
-		
 	}
 
 

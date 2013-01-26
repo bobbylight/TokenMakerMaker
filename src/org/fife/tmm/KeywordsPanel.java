@@ -5,9 +5,9 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.fife.ui.RButton;
 import org.fife.ui.UIUtil;
 
 
@@ -32,9 +32,9 @@ class KeywordsPanel extends TmmPanel {
 		super(app);
 		panel.setLayout(new BorderLayout());
 
-		JPanel temp = UIUtil.createTabbedPanePanel(new BorderLayout());
+		JPanel temp = UIUtil.newTabbedPanePanel(new BorderLayout());
 		temp.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-		RButton fromFileButton = new RButton(new KeywordsFromFileAction());
+		JButton fromFileButton = new JButton(new KeywordsFromFileAction());
 		temp.add(fromFileButton, BorderLayout.LINE_START);
 		panel.add(temp, BorderLayout.NORTH);
 
