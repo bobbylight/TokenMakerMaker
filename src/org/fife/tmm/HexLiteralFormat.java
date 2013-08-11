@@ -42,6 +42,7 @@ public enum HexLiteralFormat implements NumberFormat {
 	}
 
 
+	@Override
 	public String toString() {
 		return format;
 	}

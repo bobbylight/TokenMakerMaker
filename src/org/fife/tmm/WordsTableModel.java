@@ -47,11 +47,13 @@ class WordsTableModel extends DefaultTableModel {
 	/**
 	 * Prevents cells from being edited.
 	 */
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		return false;
 	}
 
 
+	@Override
 	public void removeRow(int row) {
 		// Since we've been sorted, hack it so correct row is removed.
 		row = sorter.convertRowIndexToModel(row);

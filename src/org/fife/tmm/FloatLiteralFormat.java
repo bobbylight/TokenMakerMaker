@@ -44,6 +44,7 @@ public enum FloatLiteralFormat implements NumberFormat {
 	}
 
 
+	@Override
 	public String toString() {
 		return format;
 	}

@@ -156,16 +156,19 @@ class TmmAboutDialog extends EscapableDialog {
 	 */
 	private static class TopBorder extends AbstractBorder {
 
+		@Override
 		public Insets getBorderInsets(Component c) { 
 			return getBorderInsets(c, new Insets(0, 0, 0, 0));
 		}
 
+		@Override
 		public Insets getBorderInsets(Component c, Insets insets) {
 			insets.top = insets.left = insets.right = 5;
 			insets.bottom = 6;
 			return insets;
 		}
 
+		@Override
 		public void paintBorder(Component c, Graphics g, int x, int y,
 								int width, int height) {
 			Color color = UIManager.getColor("controlShadow");

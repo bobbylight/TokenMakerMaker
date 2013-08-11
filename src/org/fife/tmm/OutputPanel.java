@@ -71,6 +71,7 @@ public class OutputPanel extends TmmPanel {
 
 	private JTextPane createTextArea() {
 		JTextPane textPane = new JTextPane() {
+			@Override
 			public boolean getScrollableTracksViewportWidth() {
 				return getUI().getPreferredSize(this).width<=getParent().getSize().width;
 			}

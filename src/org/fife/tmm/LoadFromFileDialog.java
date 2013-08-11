@@ -190,6 +190,7 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
 			textField.requestFocusInWindow();

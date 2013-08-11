@@ -91,6 +91,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void createActions(GUIApplicationPreferences prefs) {
 
 		ResourceBundle msg = getResourceBundle();
@@ -562,6 +563,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	private void showBalloonTip(JComponent parent, String text) {
 		final BalloonTip tip = new BalloonTip(parent, text);
 		tip.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				ActionListener al = new ActionListener() {
 					@Override

@@ -32,6 +32,7 @@ class Divider extends JComponent {
 	}
 
 
+	@Override
 	public Dimension getPreferredSize() {
 		FontMetrics fm = getFontMetrics(getFont());
 		int width = fm.stringWidth(getText());
@@ -45,6 +46,7 @@ class Divider extends JComponent {
 	}
 
 
+	@Override
 	protected void paintComponent(Graphics g) {
 
 		super.paintComponent(g);

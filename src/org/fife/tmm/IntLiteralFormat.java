@@ -42,6 +42,7 @@ public enum IntLiteralFormat implements NumberFormat {
 	}
 
 
+	@Override
 	public String toString() {
 		return format;
 	}

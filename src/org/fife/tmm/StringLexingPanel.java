@@ -91,6 +91,7 @@ class StringLexingPanel extends TmmPanel {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setBackticksEnabled(false);
 		info.setCharsEnabled(charCB.isSelected());
@@ -103,6 +104,7 @@ class StringLexingPanel extends TmmPanel {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		stringCB.setSelected(info.getStringsEnabled());
 		stringMultiLineCB.setSelected(info.getStringsMultiLine());

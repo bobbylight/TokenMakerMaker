@@ -351,6 +351,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 			return theme;
 		}
 
+		@Override
 		public String toString() {
 			return text;
 		}

@@ -29,7 +29,7 @@
 	<property name="rsta-dir"         location="../RSyntaxTextArea"/>
 	<property name="debug"            value="true"/>
 	<property name="debuglevel"       value="lines,vars,source"/>
-	<property name="java-level"       value="1.5"/>
+	<property name="java-level"       value="1.6"/>
 
 
 	<!-- Compiles the classes.  -->
@@ -39,7 +39,7 @@
 		<javac srcdir="${source-dir}" destdir="${class-dir}"
 			classpath="lib/balloontip-1.2.1.jar;lib/fife.common.jar;lib/JFlex.jar;lib/miglayout-3.7.1-swing-java14.jar;${rsta-dir}/dist/rsyntaxtextarea.jar"
 			deprecation="yes" debug="${debug}" debuglevel="${debuglevel}"
-			source="${java-level}" target="${java-level}"/>
+			source="${java-level}" target="${java-level}" includeantruntime="false"/>
 	</target>
 
 
