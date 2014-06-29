@@ -151,7 +151,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 */
 	@Override
 	protected JMenuBar createMenuBar(GUIApplicationPreferences prefs) {
-		return new MenuBar(this);
+		return new MenuBar(this, (Prefs)prefs);
 	}
 
 
@@ -466,6 +466,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		setJavac(p.javac);
 		setSourceOutputDirectory(p.outputDir);
 		setClassOutputDirectory(p.classOutputDir);
+		setThemeName(p.theme);
 
 		tp = createTabbedPane();
 		getContentPane().add(tp, BorderLayout.NORTH);
@@ -556,6 +557,11 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 * @see #getThemeName()
 	 */
 	public void setThemeName(String theme) {
+		// Java preferences API requires saving a non-null value, so we
+		// take empty string to mean "no theme".
+		if (theme!=null && theme.isEmpty()) {
+			theme = null;
+		}
 		this.theme = theme;
 	}
 

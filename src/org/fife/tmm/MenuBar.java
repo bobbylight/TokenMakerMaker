@@ -33,9 +33,15 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 	 *
 	 * @param app The parent application.
 	 */
-	public MenuBar(TokenMakerMaker app) {
+	public MenuBar(TokenMakerMaker app, Prefs prefs) {
 
 		ResourceBundle msg = app.getResourceBundle();
+		
+		String[] history = null;
+		if (prefs.fileHistoryString!=null &&
+				!prefs.fileHistoryString.isEmpty()) {
+			history = prefs.fileHistoryString.split("<");
+		}
 
 		JMenu menu = createMenu(msg, "File");
 		menu.add(createMenuItem(app.getAction(TokenMakerMaker.OPEN_ACTION_KEY)));
@@ -43,7 +49,7 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		menu.addSeparator();
 		menu.add(createMenuItem(app.getAction(TokenMakerMaker.OPTIONS_ACTION_KEY)));
 		menu.addSeparator();
-		historyMenu = new RecentFilesMenu(app);
+		historyMenu = new RecentFilesMenu(app, history);
 		menu.add(historyMenu);
 		menu.addSeparator();
 		menu.add(createMenuItem(app.getAction(TokenMakerMaker.EXIT_ACTION_KEY)));
@@ -135,6 +141,28 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 
 
 	/**
+	 * Returns a string representing all files in the file history separated by
+	 * '<' characters.  This character was chosen as the separator because it
+	 * is a character that cannot be used in filenames in both Windows and
+	 * UNIX/Linux.
+	 *
+	 * @return A <code>String</code> representing all files in the file
+	 *         history, separated by '<' characters.  If no files are in the
+	 *         file history, then <code>null</code> is returned.
+	 */
+	public String getFileHistoryString() {
+		String retVal = "";
+		int historyCount = historyMenu.getItemCount();
+		for (int i=historyCount-1; i>=0; i--) {
+			retVal += historyMenu.getFileFullPath(i) + "<";
+		}
+		if (retVal.length()>0)
+			retVal = retVal.substring(0, retVal.length()-1); // Remove trailing '>'.
+		return retVal;
+	}
+
+
+	/**
 	 * Determines the width of the given <code>String</code> containing no
 	 * tabs.  Note that this is simply a trimmed-down version of
 	 * <code>javax.swing.text.getTextWidth</code> that has been
@@ -165,8 +193,8 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 
 		private TokenMakerMaker app;
 		
-		public RecentFilesMenu(TokenMakerMaker app) {
-			super(app.getString("RecentFiles"));
+		public RecentFilesMenu(TokenMakerMaker app, String[] history) {
+			super(app.getString("RecentFiles"), history);
 			setMnemonic(app.getString("RecentFiles.Mnemonic").charAt(0));
 			this.app = app;
 		}

@@ -22,13 +22,18 @@ public class Prefs extends GUIApplicationPreferences {
 	public File javac;
 	public File outputDir;
 	public File classOutputDir;
+	public String theme;
+	public String fileHistoryString;
 
 	private static final String CLASS_OUTPUT_DIR	= "classOutputDir";
 	private static final String JAVAC_LOC			= "javacLoc";
 	private static final String SOURCE_OUTPUT_DIR	= "sourceOutputDir";
+	private static final String THEME				= "theme";
+	private static final String HISTORY				= "recentFiles";
 
 	private static final String DEFAULT_OUTPUT_DIR			= System.getProperty("java.io.tmpdir");
 	private static final String DEFAULT_CLASS_OUTPUT_DIR	= DEFAULT_OUTPUT_DIR;
+	private static final String DEFAULT_THEME				= null;
 
 
 	public Prefs() {
@@ -52,13 +57,15 @@ public class Prefs extends GUIApplicationPreferences {
 		prefs.javac					= tmm.getJavac();
 		prefs.outputDir				= tmm.getSourceOutputDirectory();
 		prefs.classOutputDir		= tmm.getClassOutputDirectory();
+		prefs.theme					= tmm.getThemeName();
+		prefs.fileHistoryString		= ((MenuBar)tmm.getJMenuBar()).getFileHistoryString();
 
 		return prefs;
 
 	}
 
 
-	private File getDefaultJavac() {
+	private static final File getDefaultJavac() {
 
 		String javaHome = System.getProperty("java.home");
 
@@ -99,7 +106,7 @@ public class Prefs extends GUIApplicationPreferences {
 
 		try {
 
-			// Get all properties associated with the RText class.
+			// Get all properties common to all applications
 			Preferences prefs2 = Preferences.userNodeForPackage(TokenMakerMaker.class);
 			loadCommonPreferences(prefs, prefs2);
 
@@ -108,6 +115,14 @@ public class Prefs extends GUIApplicationPreferences {
 
 			dir = prefs2.get(CLASS_OUTPUT_DIR, DEFAULT_CLASS_OUTPUT_DIR);
 			prefs.classOutputDir = new File(dir);
+
+			String javac = prefs2.get(JAVAC_LOC, null);
+			prefs.javac = javac!=null ? new File(javac) : getDefaultJavac();
+
+			prefs.theme = prefs2.get(THEME, DEFAULT_THEME);
+
+			String historyStr = prefs2.get(HISTORY, null);
+			prefs.fileHistoryString = historyStr;
 
 		} catch (RuntimeException re) { // FindBugs
 			throw re;
@@ -128,6 +143,8 @@ public class Prefs extends GUIApplicationPreferences {
 		prefs.put(JAVAC_LOC,			javac==null ? "" : javac.getAbsolutePath());
 		prefs.put(CLASS_OUTPUT_DIR,		classOutputDir.getAbsolutePath());
 		prefs.put(SOURCE_OUTPUT_DIR,	outputDir.getAbsolutePath());
+		prefs.put(THEME,				theme==null ? "" : theme);
+		prefs.put(HISTORY,				fileHistoryString==null ? "" : fileHistoryString);
 	}
 
 
@@ -147,6 +164,8 @@ public class Prefs extends GUIApplicationPreferences {
 		javac = getDefaultJavac();
 		outputDir = new File(DEFAULT_OUTPUT_DIR);
 		classOutputDir = new File(DEFAULT_CLASS_OUTPUT_DIR);
+		theme = DEFAULT_THEME;
+		//fileHistoryString = null;
 
 	}
 
