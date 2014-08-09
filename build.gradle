@@ -1,0 +1,105 @@
+['java', 'eclipse', 'distribution', 'maven', 'signing'].each { apply plugin: it }
+
+dependencies {
+//	compile([ 'de.jflex:jflex:1.4.1' ], // group:name:version
+//	        [ 'com.fifesoft:fife.common:2.5.3' ],
+//			[ 'com.miglayout:miglayout-swing:4.2' ],
+//	        [ 'net.java.balloontip:balloontip:1.2.4.1' ])
+	testCompile 'junit:junit:4.+'
+}
+
+compileJava {
+	sourceCompatibility javaVersion
+	targetCompatibility javaVersion
+	classpath += files("${projectDir.absolutePath}/../RSyntaxTextArea/build/classes/main",
+		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-3.7.1-swing-java14.jar")
+	options.debug = true
+	options.debugOptions.debugLevel = 'source,vars,lines'
+	options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
+ext.sharedManifest = manifest {
+	attributes('Main-Class': 'org/fife/tmm/Main',
+		'Class-Path': "balloontip-1.2.1.jar fife.common.jar JFlex.jar miglayout-3.7.1-swing-java14.jar RSyntaxTextArea-${version}.jar",
+		'Specification-Title': 'TokenMakerMaker',
+		'Specification-Version': version,
+		'Implementation-Title': 'org.fife.ui',
+		'Implementation-Version': version)
+
+}
+jar {
+	manifest { from sharedManifest }
+}
+
+// We use "distributions" to create the zip files uploaded to SourceForge
+distributions {
+	main {
+		baseName = 'tmm'
+		contents {
+			from { [ 'build/libs', 'distfiles' ] }
+			rename 'TokenMakerMaker-.*\\.jar', 'tmm.jar'
+		}
+	}
+	src {
+		baseName = 'tmm'
+	}
+}
+distZip.classifier = null
+distZip {
+	from "$projectDir/lib"
+	include '**'
+	from "$projectDir/../RSyntaxTextArea/build/libs"
+	include 'RSyntaxTextArea-${version}.jar'
+	rename { return baseName + '-' + version + '/' + it; }
+}
+distZip.dependsOn jar
+srcDistZip.classifier = 'src'
+srcDistZip {
+	from projectDir
+	include 'src/**'
+	include 'lib/**'
+	include 'build.gradle'
+	include '.classpath'
+	include '.project'
+	include 'gradle.properties'
+	include 'README.md'
+	include '.settings/**'
+}
+
+task buildSourceForgeZips << {
+	println "Building zip files for SourceForge"
+}
+buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
+
+// Stuff to generate and upload Maven artifacts
+task javadocJar (type: Jar, dependsOn: javadoc) {
+	manifest { from sharedManifest }
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+task sourceJar (type: Jar) {
+	manifest { from sharedManifest }
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+artifacts {
+	archives jar, javadocJar, sourceJar
+}
+signing {
+	sign configurations.archives
+}
+repositories {
+	mavenCentral()
+	maven {
+		url ('file://' + projectDir + '/repo')
+	}
+}
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: 'file:///' + projectDir + '/../localMavenRepo')
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+			pom.groupId = 'com.fifesoft'
+		}
+	}
+}

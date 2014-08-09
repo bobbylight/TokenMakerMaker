@@ -2,4 +2,7 @@ ant-classes
 bin
 dist
 tmm_*_Source.zip
+build
+repo
+.gradle
 

@@ -89,13 +89,19 @@ class GenerateAction extends StandardAction {
 		String installDir = tmm.getInstallLocation();
 		File rstaJar = new File(installDir, "rsyntaxtextarea.jar");
 		if (!rstaJar.isFile()) { // Debugging in Eclipse
-			rstaJar = new File(installDir, "../RSyntaxTextArea/dist/rsyntaxtextarea.jar");
-			try {
-				rstaJar = rstaJar.getCanonicalFile();
-			} catch (IOException ioe) {
-				// Ignore, path is just uglier
+			File rstaBuildDir = new File(installDir, "../RSyntaxTextArea/build/libs");
+			if (rstaBuildDir.isDirectory()) {
+				File[] artifacts = rstaBuildDir.listFiles();
+				if (artifacts!=null && artifacts.length>0) {
+					rstaJar = artifacts[0];
+					try {
+						rstaJar = rstaJar.getCanonicalFile();
+					} catch (IOException ioe) {
+						// Ignore, path is just uglier
+					}
+				}
 			}
-			if (!rstaJar.isFile()) {
+			if (rstaJar==null || !rstaJar.isFile()) {
 				String desc = tmm.getString("Error.RSyntaxTextAreaJarNotFound");
 				FileNotFoundException fnfe = new FileNotFoundException(desc);
 				tmm.displayException(fnfe);
@@ -165,7 +171,7 @@ class GenerateAction extends StandardAction {
 		String installDir = tmm.getInstallLocation();
 		File skeletonFile = new File(installDir, "skeleton.default");
 		if (!skeletonFile.isFile()) { // Debugging in Eclipse
-			skeletonFile = new File(installDir, "res/skeleton.default");
+			skeletonFile = new File(installDir, "src/main/dist/skeleton.default");
 		}
 
 		// Hacky, fix me - allow JFlex to be in a lib/ subdir, or in the cwd.

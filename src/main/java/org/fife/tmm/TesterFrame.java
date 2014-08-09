@@ -46,8 +46,9 @@ class TesterFrame extends JFrame {
 		textArea = new RSyntaxTextArea(20, 50);
 		String themeName = app.getThemeName();
 		if (themeName!=null) {
+			String res = "/org/fife/ui/rsyntaxtextarea/themes/" + themeName;
 			BufferedInputStream bin = new BufferedInputStream(
-					getClass().getResourceAsStream("/" + themeName));
+					getClass().getResourceAsStream(res));
 			Theme theme = Theme.load(bin);
 			bin.close();
 			theme.apply(textArea);

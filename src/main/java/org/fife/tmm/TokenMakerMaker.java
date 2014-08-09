@@ -302,7 +302,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 		if (helpDialog==null) {
 			String baseDir = getInstallLocation() + "/help/";
 			if (!new File(baseDir).isDirectory()) { // Debugging in Eclipse
-				baseDir = getInstallLocation() + "/res/help/";
+				baseDir = getInstallLocation() + "/src/main/dist/help/";
 			}
 			String contentsFile = baseDir + "help.xml";
 			helpDialog = new HelpDialog(this, contentsFile, baseDir);
