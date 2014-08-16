@@ -1,8 +1,8 @@
 TokenMakerMaker README
 ----------------------
 
-This project is a work-in-progress, and currently has lots of issues.  It is
-much less mature than all other RSyntaxTextArea projects.  USE AT YOUR OWN RISK!
+This project is a work-in-progress, and currently has a few issues.  It is
+less mature than all other RSyntaxTextArea projects.  USE AT YOUR OWN RISK!
 
 TokenMakerMaker provides a simple GUI interface that allows you to define a
 programming language.  It can then generate a .flex and .java file that
@@ -27,21 +27,21 @@ RSyntaxTextArea in a project alongside this one.  Otherwise, this project is
 self-contained (all other dependencies are found in the lib/ directory).
 
 
-BUILDING WITH ANT:
-------------------
-1. Use RSyntaxTextArea's Ant build script to create dist/rsyntaxtextarea.jar.
-2. Use this project's build script to create TokenMakerMaker.
+BUILDING WITH GRADLE:
+---------------------
+1. Build RSyntaxTextArea's jar artifact.
+2. Use this project's gradlew wrapper to create TokenMakerMaker.
 
      cd <project-root>/RSyntaxTextArea
-     ant
+     gradlew jar
      cd <project-root>/TokenMakerMaker
-     ant make-app
+     gradlew build
 
 
 USING:
 ------
 1. Run class org.fife.tmm.Main from Eclipse.  No other work required.  OR...
-2. After building with Ant (see above), from the command line:
+2. After building with Gradle (see above), from the command line:
    java -jar tmm.jar
 
 

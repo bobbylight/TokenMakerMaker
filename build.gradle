@@ -5,7 +5,12 @@ dependencies {
 //	        [ 'com.fifesoft:fife.common:2.5.3' ],
 //			[ 'com.miglayout:miglayout-swing:4.2' ],
 //	        [ 'net.java.balloontip:balloontip:1.2.4.1' ])
-	testCompile 'junit:junit:4.+'
+//	testCompile 'junit:junit:4.+'
+}
+
+// Regenerate local gradlew
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.0'
 }
 
 compileJava {
@@ -16,6 +21,11 @@ compileJava {
 	options.debug = true
 	options.debugOptions.debugLevel = 'source,vars,lines'
 	options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
+javadoc {
+	classpath += files("${projectDir.absolutePath}/../RSyntaxTextArea/build/classes/main",
+		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-3.7.1-swing-java14.jar")
 }
 
 ext.sharedManifest = manifest {
