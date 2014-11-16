@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/fife.common.jar"/>
 	<classpathentry kind="lib" path="lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="lib/miglayout-3.7.1-swing-java14.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

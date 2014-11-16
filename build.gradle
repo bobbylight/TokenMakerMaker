@@ -109,7 +109,98 @@ uploadArchives {
 		mavenDeployer {
 			repository(url: 'file:///' + projectDir + '/../localMavenRepo')
 			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-			pom.groupId = 'com.fifesoft'
+			pom {
+				groupId = 'com.fifesoft'
+				name = 'tokenmakermaker'
+				project {
+					parent {
+						groupId 'org.sonatype.oss'
+						artifactId 'oss-parent'
+						version '7'
+						relativePath ''
+					}
+					
+					groupId 'com.fifesoft'
+					artifactId 'tokenmakermaker'
+					packaging 'jar'
+					
+					name 'TokenMakerMaker'
+					description 'An application to easily create syntax highlighting for custom languages in RSyntaxTextArea.'
+					
+					inceptionYear '2003'
+					url 'http://www.fifesoft.com/rsyntaxtextarea/'
+					licenses {
+						license {
+							name 'Modified BSD License'
+							url 'http://fifesoft.com/rsyntaxtextarea/RSyntaxTextArea.License.txt'
+							distribution 'repo'
+						}
+					}
+					
+					scm {
+						url 'https://github.com/bobbylight/TokenMakerMaker'
+						connection 'scm:git:git://github.com/bobbylight/TokenMakerMaker'
+						developerConnection 'scm:git:git@github.com:bobbylight/TokenMakerMaker'
+					}
+					
+					developers {
+						developer {
+							name 'Robert Futrell'
+							url 'http://www.fifesoft.com'
+							organization = 'Fifesoft' /* https://issues.gradle.org/browse/GRADLE-1200 */
+							organizationUrl 'http://www.fifesoft.com/'
+							roles {
+								role 'architect'
+								role 'developer'
+							}
+							timezone '0'
+						}
+					}
+					
+					// Manually add runtime dependencies since we don't have
+					// a multi-project build set up properly
+					dependencies {
+						dependency {
+							groupId 'com.fifesoft'
+							artifactId 'rsyntaxtextarea'
+							version project.version
+						}
+					}
+					
+					// Says to enforce 1.6 compatibility when building
+					// Doesn't work as of Gradle 2.0 due to a Groovy bug; see
+					// http://jira.codehaus.org/browse/GROOVY-7023
+					// For now, append it via XML directly
+					/*
+					build {
+						plugins {
+							plugin {
+								artifactId 'maven-compiler-plugin'
+								version '2.3.2'
+								executions {
+									execution {
+										id 'default-compile'
+										configuration {
+											source '1.6'
+											target '1.6'
+										}
+									}
+								}
+							}
+						}
+					}
+					*/
+					withXml {
+						def pluginNode = asNode().appendNode('build').appendNode('plugins').appendNode('plugin')
+						pluginNode.appendNode('artifactId', 'maven-compiler-plugin')
+						pluginNode.appendNode('version', '2.3.2')
+						def executionNode = pluginNode.appendNode('executions').appendNode('execution')
+						executionNode.appendNode('id', 'default-compile')
+						executionNode.appendNode('configuration').appendNode('source', '1.6').
+						      parent().appendNode('target', '1.6')
+					}
+				}
+			}
 		}
 	}
 }
