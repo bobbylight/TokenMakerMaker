@@ -22,27 +22,27 @@ Sporadic notes:
 
 DEPENDENCIES:
 -------------
-In order to build this project, you need to also have the source for
-RSyntaxTextArea in a project alongside this one.  Otherwise, this project is
-self-contained (all other dependencies are found in the lib/ directory).
+All dependencies are pulled in via Maven with the included Gradle build script.
+The version of RSyntaxTextArea built against can be changed by updating its
+dependency.
 
 
 BUILDING WITH GRADLE:
 ---------------------
-1. Build RSyntaxTextArea's jar artifact.
-2. Use this project's gradlew wrapper to create TokenMakerMaker.
+To build use this project's gradlew wrapper to create TokenMakerMaker.
 
-     cd <project-root>/RSyntaxTextArea
-     gradlew jar
      cd <project-root>/TokenMakerMaker
-     gradlew build
+     gradlew --refresh-dependencies
+     gradlew clean build installDist
 
 
 USING:
 ------
 1. Run class org.fife.tmm.Main from Eclipse.  No other work required.  OR...
 2. After building with Gradle (see above), from the command line:
-   java -jar tmm.jar
+
+     cd <project-root>/build/install/tmm
+     java -jar tmm.jar
 
 
 
