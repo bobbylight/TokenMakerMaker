@@ -45,7 +45,6 @@ public class OptionsAction extends StandardAction {
 	private OptionsDialog createOptionsDialog() {
 
 		TokenMakerMaker app = (TokenMakerMaker)getApplication();
-		OptionsDialog dialog = new OptionsDialog(app);
 		List<OptionsDialogPanel> panels = new ArrayList<OptionsDialogPanel>();
 
 		String title = app.getString("Options.General");
@@ -55,8 +54,9 @@ public class OptionsAction extends StandardAction {
 		panel.addChildPanel(new FileChooserFavoritesOptionPanel());
 		panels.add(panel);
 
-		dialog.setOptionsPanels(panels.toArray(new OptionsDialogPanel[2]));
-		return dialog;
+		OptionsDialog od = new OptionsDialog(app);
+		od.setOptionsPanels(panels);
+		return od;
 
 	}
 

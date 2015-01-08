@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,10 +33,10 @@ import javax.swing.text.JTextComponent;
 import org.fife.help.HelpDialog;
 import org.fife.jgoodies.looks.common.ShadowPopupFactory;
 import org.fife.ui.CustomizableToolBar;
+import org.fife.ui.OS;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.StatusBar;
 import org.fife.ui.app.AbstractGUIApplication;
-import org.fife.ui.app.GUIApplicationPreferences;
 import org.fife.ui.app.StandardAction;
 import org.fife.ui.rtextfilechooser.FileChooserOwner;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
@@ -54,7 +55,7 @@ import net.java.balloontip.utils.TimingUtils;
  * @author Robert Futrell
  * @version 1.0
  */
-public class TokenMakerMaker extends AbstractGUIApplication
+public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 							implements FileChooserOwner {
 
 	public static final String GENERATE_ACTION_KEY			= "GenerateAction";
@@ -72,7 +73,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	private String theme;
 	private HelpDialog helpDialog;
 
-	private static final String VERSION = "1.0";
+	private static final String VERSION = "2.6.0";
 
 	private static final String BUNDLE_NAME	= "org.fife.tmm.TokenMakerMaker";
 
@@ -92,7 +93,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void createActions(GUIApplicationPreferences prefs) {
+	protected void createActions(Prefs prefs) {
 
 		ResourceBundle msg = getResourceBundle();
 
@@ -118,6 +119,8 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 		action = new GenerateAction(this);
 		addAction(GENERATE_ACTION_KEY, action);
+
+		loadActionShortcuts(getShortcutsFile());
 
 	}
 
@@ -150,8 +153,8 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 * @return The menu bar.
 	 */
 	@Override
-	protected JMenuBar createMenuBar(GUIApplicationPreferences prefs) {
-		return new MenuBar(this, (Prefs)prefs);
+	protected JMenuBar createMenuBar(Prefs prefs) {
+		return new MenuBar(this, prefs);
 	}
 
 
@@ -168,7 +171,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 * @return The status bar.
 	 */
 	@Override
-	protected StatusBar createStatusBar(GUIApplicationPreferences prefs) {
+	protected StatusBar createStatusBar(Prefs prefs) {
 		StatusBar sb = new StatusBar();
 		return sb;
 	}
@@ -219,7 +222,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 
 	@Override
-	protected CustomizableToolBar createToolBar(GUIApplicationPreferences prefs) {
+	protected CustomizableToolBar createToolBar(Prefs prefs) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -239,8 +242,8 @@ public class TokenMakerMaker extends AbstractGUIApplication
 			}
 		}
 
-		Prefs prefs = Prefs.createPreferences(this);
-		prefs.savePreferences(this);
+		new Prefs().populate(this).save();
+		saveActionShortcuts(getShortcutsFile());
 
 		if (chooser!=null) {
 			chooser.savePreferences();
@@ -345,7 +348,7 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	 * @see #getJavac()
 	 */
 	public File getJavaExe() {
-		String fileName = getOS()==OS_WINDOWS ? "bin\\java.exe" : "bin/java";
+		String fileName = getOS()==OS.WINDOWS ? "bin\\java.exe" : "bin/java";
 		return new File(System.getProperty("java.home"), fileName);
 	}
 
@@ -384,6 +387,18 @@ public class TokenMakerMaker extends AbstractGUIApplication
 	@Override
 	public String getResourceBundleClassName() {
 		return BUNDLE_NAME;
+	}
+
+
+	/**
+	 * Returns the file in which to load and save user-customized keyboard
+	 * shortcuts.
+	 *
+	 * @return The shortcuts file.
+	 */
+	private static final File getShortcutsFile() {
+		return new File(System.getProperty("user.home"),
+				".tmm/shortcuts.properties");
 	}
 
 
@@ -458,15 +473,13 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 
 	@Override
-	protected void preDisplayInit(GUIApplicationPreferences prefs,
-			SplashScreen splash) {
+	protected void preDisplayInit(Prefs prefs, SplashScreen splash) {
 
 		// Load our preferences
-		Prefs p = (Prefs)prefs;
-		setJavac(p.javac);
-		setSourceOutputDirectory(p.outputDir);
-		setClassOutputDirectory(p.classOutputDir);
-		setThemeName(p.theme);
+		setJavac(prefs.javac);
+		setSourceOutputDirectory(prefs.outputDir);
+		setClassOutputDirectory(prefs.classOutputDir);
+		setThemeName(prefs.theme);
 
 		tp = createTabbedPane();
 		getContentPane().add(tp, BorderLayout.NORTH);
@@ -485,24 +498,21 @@ public class TokenMakerMaker extends AbstractGUIApplication
 
 
 	@Override
-	protected void preMenuBarInit(GUIApplicationPreferences prefs,
-			SplashScreen splash) {
+	protected void preMenuBarInit(Prefs prefs, SplashScreen splash) {
 		// TODO Auto-generated method stub
 
 	}
 
 
 	@Override
-	protected void preStatusBarInit(GUIApplicationPreferences prefs,
-			SplashScreen splash) {
+	protected void preStatusBarInit(Prefs prefs, SplashScreen splash) {
 		// TODO Auto-generated method stub
 
 	}
 
 
 	@Override
-	protected void preToolBarInit(GUIApplicationPreferences prefs,
-			SplashScreen splash) {
+	protected void preToolBarInit(Prefs prefs, SplashScreen splash) {
 		// TODO Auto-generated method stub
 
 	}

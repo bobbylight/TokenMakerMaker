@@ -19,6 +19,8 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -55,6 +57,7 @@ class TmmAboutDialog extends EscapableDialog {
 		this.app = parent;
 
 		JPanel cp = new ResizableFrameContentPane(new BorderLayout());
+		cp.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
 		Box box = Box.createVerticalBox();
 
@@ -74,7 +77,8 @@ class TmmAboutDialog extends EscapableDialog {
 		addLeftAligned(label, box2);
 		box2.add(Box.createVerticalStrut(5));
 
-		SelectableLabel descLabel = new SelectableLabel(app.getString("Dialog.About.Desc"));
+		SelectableLabel descLabel = new SelectableLabel(
+				app.getString("Dialog.About.Desc", app.getVersionString()));
 		descLabel.addHyperlinkListener(new HyperlinkListener() {
 			@Override
 			public void hyperlinkUpdate(HyperlinkEvent e) {

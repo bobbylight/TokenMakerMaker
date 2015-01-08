@@ -3,10 +3,16 @@ package org.fife.tmm;
 //import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -86,28 +92,30 @@ class GenerateAction extends StandardAction {
 
 		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
 
-		String installDir = tmm.getInstallLocation();
-		File rstaJar = new File(installDir, "rsyntaxtextarea.jar");
-		if (!rstaJar.isFile()) { // Debugging in Eclipse
-			File rstaBuildDir = new File(installDir, "../RSyntaxTextArea/build/libs");
-			if (rstaBuildDir.isDirectory()) {
-				File[] artifacts = rstaBuildDir.listFiles();
-				if (artifacts!=null && artifacts.length>0) {
-					rstaJar = artifacts[0];
-					try {
-						rstaJar = rstaJar.getCanonicalFile();
-					} catch (IOException ioe) {
-						// Ignore, path is just uglier
-					}
-				}
-			}
-			if (rstaJar==null || !rstaJar.isFile()) {
-				String desc = tmm.getString("Error.RSyntaxTextAreaJarNotFound");
-				FileNotFoundException fnfe = new FileNotFoundException(desc);
-				tmm.displayException(fnfe);
-				return false;
-			}
-		}
+		File rstaJar = getRstaJar(tmm);
+//		if (rstaJar==null || !rstaJar.isFile()) { // Debugging in Eclipse
+//			
+//			File installDir = new File(tmm.getInstallLocation());
+//			File rstaBuildDir = new File(installDir, "../RSyntaxTextArea/build/libs");
+//			if (rstaBuildDir.isDirectory()) {
+//				File[] artifacts = rstaBuildDir.listFiles(new RstaJarFilter());
+//				if (artifacts!=null && artifacts.length>0) {
+//					rstaJar = artifacts[0];
+//					try {
+//						rstaJar = rstaJar.getCanonicalFile();
+//					} catch (IOException ioe) {
+//						// Ignore, path is just uglier
+//					}
+//				}
+//			}
+//			if (rstaJar==null || !rstaJar.isFile()) {
+//				String desc = tmm.getString("Error.RSyntaxTextAreaJarNotFound");
+//				FileNotFoundException fnfe = new FileNotFoundException(desc);
+//				tmm.displayException(fnfe);
+//				return false;
+//			}
+//			
+//		}
 
 		File javac = tmm.getJavac();
 		if (javac==null) { // They left javac field blank.
@@ -174,11 +182,7 @@ class GenerateAction extends StandardAction {
 			skeletonFile = new File(installDir, "src/main/dist/skeleton.default");
 		}
 
-		// Hacky, fix me - allow JFlex to be in a lib/ subdir, or in the cwd.
-		File jflexJar = new File(installDir, "lib/JFlex.jar");
-		if (!jflexJar.isFile()) {
-			jflexJar = new File(installDir, "JFlex.jar");
-		}
+		File jflexJar = getJFlexJar(tmm);
 
 		// Run JFlex off the EDT and collect its output as it runs.
 		// We'll parse the generated .java file afterwards.
@@ -195,6 +199,85 @@ class GenerateAction extends StandardAction {
 		tmm.getOutputPanel().appendOutput(text, ProcessOutputType.HEADER_INFO);
 		thread.start();
 
+	}
+
+
+	/**
+	 * Returns all entries on the application's classpath.
+	 *
+	 * @return All classpath entries.
+	 */
+	private static final String[] getClasspathEntries() {
+
+		// When run from an IDE such as Eclipse, jars are on the command line
+		String[] entries = System.getProperty("java.class.path").
+				split(File.pathSeparator);
+
+		// If running from the built jar, we must check the manifest for
+		// classpath entries
+		if (entries.length == 1) {
+
+			try {
+				JarFile jsf = new JarFile(entries[0]);
+				try {
+					Manifest mf = jsf.getManifest();
+					Attributes attrs = mf.getMainAttributes();
+					String classpath = attrs.getValue("Class-Path");
+					entries = classpath.split(" ");
+				} finally {
+					jsf.close();
+				}
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+
+		}
+
+		return entries;
+
+	}
+
+
+	/**
+	 * Returns the classpath entry that matches the given regular expression.
+	 *
+	 * @param entries The classpath entries.
+	 * @param regex The regular expression.
+	 * @return The (first) matching classpath entry, or <code>null</code> if
+	 *         no match is found.
+	 */
+	private static final String getClasspathEntryMatching(String[] entries,
+			String regex) {
+		Pattern p = Pattern.compile(regex);
+		for (String entry : entries) {
+			if (p.matcher(entry).matches()) {
+				return entry;
+			}
+		}
+		return null;
+	}
+
+
+	private File getClasspathJarImpl(TokenMakerMaker tmm, String fileRegex) {
+		String[] classpathEntries = getClasspathEntries();
+		String jflexJarPath = getClasspathEntryMatching(classpathEntries,
+				fileRegex);
+		File file = new File(jflexJarPath);
+		if (!file.isAbsolute()) {
+			file = new File(tmm.getInstallLocation(), jflexJarPath);
+		}
+		return file;
+	}
+
+
+	private File getJFlexJar(TokenMakerMaker tmm) {
+		return getClasspathJarImpl(tmm, ".*jflex\\-\\d\\.\\d\\.\\d\\.jar$");
+	}
+
+
+	private File getRstaJar(TokenMakerMaker tmm) {
+		return getClasspathJarImpl(tmm,
+				".*rsyntaxtextarea\\-\\d\\.\\d\\.\\d(?:\\-SNAPSHOT)?\\.jar$");
 	}
 
 
@@ -360,6 +443,21 @@ class GenerateAction extends StandardAction {
 			String cmd = tmm.getString("Output.RunningCommand", pr.getCommandLineString());
 			tmm.getOutputPanel().appendOutput(cmd, ProcessOutputType.HEADER_INFO);
 			pr.run();
+		}
+
+	}
+
+
+	/**
+	 * A file filter that identifies files whose names are of the format
+	 * "<code>rsyntaxtextarea-n.n.n.jar</code>" and
+	 * "<code>rsyntaxtextarea-n.n.n-SNAPSHOT.jar</code>".
+	 */
+	private static class RstaJarFilter implements FilenameFilter {
+
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.matches("rsyntaxtextarea\\-([\\d\\.]+)(?:-SNAPSHOT)?\\.jar");
 		}
 
 	}

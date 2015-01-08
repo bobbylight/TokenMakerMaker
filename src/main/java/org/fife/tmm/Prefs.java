@@ -4,11 +4,11 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.prefs.Preferences;
 import javax.swing.UIManager;
 
-import org.fife.ui.app.GUIApplicationPreferences;
+import org.fife.ui.OS;
+import org.fife.ui.app.GUIApplicationPrefs;
 
 
 /**
@@ -17,7 +17,7 @@ import org.fife.ui.app.GUIApplicationPreferences;
  * @author Robert Futrell
  * @version 1.0
  */
-public class Prefs extends GUIApplicationPreferences {
+public class Prefs extends GUIApplicationPrefs<TokenMakerMaker> {
 
 	public File javac;
 	public File outputDir;
@@ -41,27 +41,15 @@ public class Prefs extends GUIApplicationPreferences {
 	}
 
 
-	public static Prefs createPreferences(TokenMakerMaker tmm) {
-
-		Prefs prefs = new Prefs();
-
-		// "Common" preferences
-		prefs.location				= tmm.getLocation();
-		prefs.location.translate(15,15);
-		prefs.size					= tmm.isMaximized() ? new Dimension(-1,-1) : tmm.getSize();
-		prefs.lookAndFeel			= UIManager.getLookAndFeel().getClass().getName();
-		prefs.toolbarVisible		= tmm.getToolBarVisible();
-		prefs.statusBarVisible		= tmm.getStatusBarVisible();
-		prefs.language				= tmm.getLanguage();
-
-		prefs.javac					= tmm.getJavac();
-		prefs.outputDir				= tmm.getSourceOutputDirectory();
-		prefs.classOutputDir		= tmm.getClassOutputDirectory();
-		prefs.theme					= tmm.getThemeName();
-		prefs.fileHistoryString		= ((MenuBar)tmm.getJMenuBar()).getFileHistoryString();
-
-		return prefs;
-
+	@Override
+	public Prefs populate(TokenMakerMaker tmm) {
+		populateCommonPreferences(tmm);
+		javac					= tmm.getJavac();
+		outputDir				= tmm.getSourceOutputDirectory();
+		classOutputDir			= tmm.getClassOutputDirectory();
+		theme					= tmm.getThemeName();
+		fileHistoryString		= ((MenuBar)tmm.getJMenuBar()).getFileHistoryString();
+		return this;
 	}
 
 
@@ -71,7 +59,7 @@ public class Prefs extends GUIApplicationPreferences {
 
 		// First, see if we're running directly from a JDK.
 		String loc = "bin/javac";
-		if (File.separatorChar=='\\') {
+		if (OS.get()==OS.WINDOWS) {
 			loc += ".exe";
 		}
 		File javac = new File(javaHome, loc);
@@ -100,44 +88,43 @@ public class Prefs extends GUIApplicationPreferences {
 	}
 
 
-	public static GUIApplicationPreferences loadPreferences() {
-
-		Prefs prefs = new Prefs();
+	@Override
+	public Prefs load() {
 
 		try {
 
 			// Get all properties common to all applications
-			Preferences prefs2 = Preferences.userNodeForPackage(TokenMakerMaker.class);
-			loadCommonPreferences(prefs, prefs2);
+			Preferences prefs = Preferences.userNodeForPackage(TokenMakerMaker.class);
+			loadCommonPreferences(prefs);
 
-			String dir = prefs2.get(SOURCE_OUTPUT_DIR, DEFAULT_OUTPUT_DIR);
-			prefs.outputDir = new File(dir);
+			String dir = prefs.get(SOURCE_OUTPUT_DIR, DEFAULT_OUTPUT_DIR);
+			outputDir = new File(dir);
 
-			dir = prefs2.get(CLASS_OUTPUT_DIR, DEFAULT_CLASS_OUTPUT_DIR);
-			prefs.classOutputDir = new File(dir);
+			dir = prefs.get(CLASS_OUTPUT_DIR, DEFAULT_CLASS_OUTPUT_DIR);
+			classOutputDir = new File(dir);
 
-			String javac = prefs2.get(JAVAC_LOC, null);
-			prefs.javac = javac!=null ? new File(javac) : getDefaultJavac();
+			String javac = prefs.get(JAVAC_LOC, null);
+			this.javac = javac!=null ? new File(javac) : getDefaultJavac();
 
-			prefs.theme = prefs2.get(THEME, DEFAULT_THEME);
+			theme = prefs.get(THEME, DEFAULT_THEME);
 
-			String historyStr = prefs2.get(HISTORY, null);
-			prefs.fileHistoryString = historyStr;
+			String historyStr = prefs.get(HISTORY, null);
+			fileHistoryString = historyStr;
 
 		} catch (RuntimeException re) { // FindBugs
 			throw re;
 		} catch (Exception e) {
 			e.printStackTrace();
-			prefs.setDefaults();
+			setDefaults();
 		}
 
-		return prefs;
+		return this;
 
 	}
 
 
 	@Override
-	public void savePreferences(Object tmm) {
+	public void save() {
 		Preferences prefs = Preferences.userNodeForPackage(TokenMakerMaker.class);
 		saveCommonPreferences(prefs);
 		prefs.put(JAVAC_LOC,			javac==null ? "" : javac.getAbsolutePath());
@@ -151,7 +138,7 @@ public class Prefs extends GUIApplicationPreferences {
 	@Override
 	protected void setDefaults() {
 
-		// TODO: This should be done in GUIApplicationPreferences and we should
+		// TODO: This should be done in GUIApplicationPrefs and we should
 		// have to call super.setDefaults()
 		location = new Point();
 		size = new Dimension(-1, -1); // TODO: "null" size should default to "pack" behavior
@@ -159,7 +146,6 @@ public class Prefs extends GUIApplicationPreferences {
 		toolbarVisible = true;
 		statusBarVisible = true;
 		language = "en";
-		accelerators = new HashMap<Object, Object>();
 
 		javac = getDefaultJavac();
 		outputDir = new File(DEFAULT_OUTPUT_DIR);

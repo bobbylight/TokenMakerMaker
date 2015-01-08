@@ -1,11 +1,12 @@
 ['java', 'eclipse', 'distribution', 'maven', 'signing'].each { apply plugin: it }
 
 dependencies {
-//	compile([ 'de.jflex:jflex:1.4.1' ], // group:name:version
-//	        [ 'com.fifesoft:fife.common:2.5.3' ],
-//			[ 'com.miglayout:miglayout-swing:4.2' ],
-//	        [ 'net.java.balloontip:balloontip:1.2.4.1' ])
-//	testCompile 'junit:junit:4.+'
+	compile([ 'de.jflex:jflex:1.4.1' ], // group:name:version
+	        [ 'com.fifesoft.rtext:fife.common:2.6.0-SNAPSHOT' ],
+	        [ 'com.fifesoft:rsyntaxtextarea:2.6.0-SNAPSHOT' ],
+			[ 'com.miglayout:miglayout-swing:5.0' ],
+	        [ 'net.java.balloontip:balloontip:1.2.4.1' ])
+	testCompile 'junit:junit:4.+'
 }
 
 // Regenerate local gradlew
@@ -17,20 +18,15 @@ compileJava {
 	sourceCompatibility javaVersion
 	targetCompatibility javaVersion
 	classpath += files("${projectDir.absolutePath}/../RSyntaxTextArea/build/classes/main",
-		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-3.7.1-swing-java14.jar")
+		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-swing-5.0.jar")
 	options.debug = true
 	options.debugOptions.debugLevel = 'source,vars,lines'
 	options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
 }
 
-javadoc {
-	classpath += files("${projectDir.absolutePath}/../RSyntaxTextArea/build/classes/main",
-		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-3.7.1-swing-java14.jar")
-}
-
 ext.sharedManifest = manifest {
 	attributes('Main-Class': 'org/fife/tmm/Main',
-		'Class-Path': "balloontip-1.2.1.jar fife.common.jar JFlex.jar miglayout-3.7.1-swing-java14.jar RSyntaxTextArea-${version}.jar",
+		'Class-Path': "balloontip-1.2.4.1.jar fife.common-${version}.jar jflex-1.4.1.jar miglayout-core-5.0.jar miglayout-swing-5.0.jar rsyntaxtextarea-${version}.jar",
 		'Specification-Title': 'TokenMakerMaker',
 		'Specification-Version': version,
 		'Implementation-Title': 'org.fife.ui',
@@ -46,8 +42,9 @@ distributions {
 	main {
 		baseName = 'tmm'
 		contents {
-			from { [ 'build/libs', 'distfiles' ] }
+			from { [ "${projectDir.absolutePath}/build/libs", configurations.runtime ] }
 			rename 'TokenMakerMaker-.*\\.jar', 'tmm.jar'
+			//rename '(jflex-.*\\.jar)', 'lib/$1'
 		}
 	}
 	src {
@@ -59,7 +56,7 @@ distZip {
 	from "$projectDir/lib"
 	include '**'
 	from "$projectDir/../RSyntaxTextArea/build/libs"
-	include 'RSyntaxTextArea-${version}.jar'
+	include 'rsyntaxtextarea-${version}.jar'
 	rename { return baseName + '-' + version + '/' + it; }
 }
 distZip.dependsOn jar
@@ -83,6 +80,8 @@ task buildSourceForgeZips << {
 }
 buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
 
+// Build the application
+
 // Stuff to generate and upload Maven artifacts
 task javadocJar (type: Jar, dependsOn: javadoc) {
 	manifest { from sharedManifest }
@@ -102,15 +101,25 @@ signing {
 }
 repositories {
 	mavenCentral()
-	maven {
-		url ('file://' + projectDir + '/repo')
+	maven { // Snapshot builds of RSTA artifacts
+		url 'https://oss.sonatype.org/content/repositories/snapshots'
 	}
 }
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: 'file:///' + projectDir + '/../localMavenRepo')
 			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+			if (project.hasProperty('upload') && Boolean.parseBoolean(upload)) { // gradlew -Pupload=true
+				repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
+				snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
+			}
+			else {
+				repository(url: 'file:///' + projectDir + '/../localMavenRepo')
+			}
 			pom {
 				groupId = 'com.fifesoft'
 				name = 'tokenmakermaker'
@@ -143,6 +152,9 @@ uploadArchives {
 						url 'https://github.com/bobbylight/TokenMakerMaker'
 						connection 'scm:git:git://github.com/bobbylight/TokenMakerMaker'
 						developerConnection 'scm:git:git@github.com:bobbylight/TokenMakerMaker'
+						if (!project.version.endsWith('-SNAPSHOT')) {
+							tag project.version
+						}
 					}
 					
 					developers {

@@ -49,7 +49,7 @@ class WordsTable extends ModifiableTable {
 	@SuppressWarnings("unchecked")
 	public List<String> getWords() {
 		List<String> words = new ArrayList<String>();
-		Vector<Vector<Object>> vec = getDataVector();
+		Vector<Vector<Object>> vec = (Vector<Vector<Object>>)getDataVector();
 		if (vec!=null && vec.size()>0) {
 			for (int i=0; i<vec.size(); i++) {
 				Vector<Object> temp = vec.get(i);
