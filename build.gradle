@@ -1,5 +1,7 @@
 ['java', 'eclipse', 'distribution', 'maven', 'signing'].each { apply plugin: it }
 
+group = 'com.fifesoft'
+
 dependencies {
 	compile([ 'de.jflex:jflex:1.4.1' ], // group:name:version
 	        [ 'com.fifesoft.rtext:fife.common:2.6.0-SNAPSHOT' ],
@@ -97,6 +99,8 @@ artifacts {
 	archives jar, javadocJar, sourceJar
 }
 signing {
+	// Don't require signing for e.g. ./gradlew install
+	required { gradle.taskGraph.hasTask("uploadArchives") }
 	sign configurations.archives
 }
 repositories {
