@@ -15,7 +15,7 @@ class Keywords2Panel extends KeywordsPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public Keywords2Panel(TokenMakerMaker app) {
+	Keywords2Panel(TokenMakerMaker app) {
 		super(app);
 	}
 

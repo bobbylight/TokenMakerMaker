@@ -28,7 +28,7 @@ class TesterFrame extends JFrame {
 	private RSyntaxTextArea textArea;
 
 
-	public TesterFrame(TokenMakerMaker app, File dir, String classFile)
+	TesterFrame(TokenMakerMaker app, File dir, String classFile)
 									throws Exception {
 
 		ClassLoader parent = getClass().getClassLoader();
@@ -39,7 +39,7 @@ class TesterFrame extends JFrame {
 		className = className.replaceAll("/", ".");
 		Class<?> clazz = ucl.loadClass(className);
 		TokenMaker tm = (TokenMaker)clazz.newInstance();
-		
+
 		JPanel cp = new JPanel(new BorderLayout());
 
 		cp.setBorder(UIUtil.getEmpty5Border());

@@ -25,7 +25,7 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 	 * Note that this is only  GUIDELINE, and some filenames
 	 * can (and will) exceed this limit.
 	 */
-	private final int MAX_FILE_PATH_LENGTH = 250;
+	private static final int MAX_FILE_PATH_LENGTH = 250;
 
 
 	/**
@@ -33,10 +33,10 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 	 *
 	 * @param app The parent application.
 	 */
-	public MenuBar(TokenMakerMaker app, Prefs prefs) {
+	MenuBar(TokenMakerMaker app, Prefs prefs) {
 
 		ResourceBundle msg = app.getResourceBundle();
-		
+
 		String[] history = null;
 		if (prefs.fileHistoryString!=null &&
 				!prefs.fileHistoryString.isEmpty()) {
@@ -87,7 +87,7 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		FontMetrics fontMetrics = getFontMetrics(getFont());
 		int textWidth = getTextWidth(longPath, fontMetrics);
 
-		// If the text width is already short enough to fit, don't do anything to it.		
+		// If the text width is already short enough to fit, don't do anything to it.
 		if (textWidth <= MAX_FILE_PATH_LENGTH) {
 			return longPath;
 		}
@@ -103,8 +103,9 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		// If there is no directory separator, then the string is just a file name,
 		// and so we can't shorten it.  Just return the sucker.
 		int lastSeparatorPos = displayString.lastIndexOf(separator);
-		if (lastSeparatorPos==-1)
-			return displayString;
+		if (lastSeparatorPos==-1) {
+            return displayString;
+        }
 
 		// Get the length of just the file name.
 		String justFileName = displayString.substring(
@@ -112,8 +113,9 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		int justFileNameLength = getTextWidth(justFileName, fontMetrics);
 
 		// If even just the file name is too long, return it.
-		if (justFileNameLength > MAX_FILE_PATH_LENGTH)
-			return "..." + separator + justFileName;
+		if (justFileNameLength > MAX_FILE_PATH_LENGTH) {
+            return "..." + separator + justFileName;
+        }
 
 		// Otherwise, just keep adding levels in the directory hierarchy
 		// until the name gets too long.
@@ -127,8 +129,9 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		while (tempFirstPartLength+endPieceLength < MAX_FILE_PATH_LENGTH) {
 			firstPart  = tempFirstPart;
 			separatorPos = displayString.indexOf(separator, separatorPos+1);
-			if (separatorPos==-1)
-				endPieceLength = 9999999;
+			if (separatorPos==-1) {
+                endPieceLength = 9999999;
+            }
 			else {
 				tempFirstPart = displayString.substring(0, separatorPos+1);
 				tempFirstPartLength = getTextWidth(tempFirstPart, fontMetrics);
@@ -156,8 +159,9 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 		for (int i=historyCount-1; i>=0; i--) {
 			retVal += historyMenu.getFileFullPath(i) + "<";
 		}
-		if (retVal.length()>0)
-			retVal = retVal.substring(0, retVal.length()-1); // Remove trailing '>'.
+		if (retVal.length()>0) {
+            retVal = retVal.substring(0, retVal.length() - 1); // Remove trailing '>'.
+        }
 		return retVal;
 	}
 
@@ -172,15 +176,16 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 	 * @param metrics the font metrics to use for the calculation
 	 * @return  the width of the text
 	 */
-	private static final int getTextWidth(String s, FontMetrics metrics) {
+	private static int getTextWidth(String s, FontMetrics metrics) {
 		int textWidth = 0;
 		char[] txt = s.toCharArray();
 		int n = txt.length;
 		for (int i=0; i<n; i++) {
 			// Ignore newlines, they take up space and we shouldn't be
 			// counting them.
-			if(txt[i] != '\n')
+			if(txt[i] != '\n') {
 				textWidth += metrics.charWidth(txt[i]);
+			}
 		}
 		return textWidth;
 	}
@@ -192,13 +197,13 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 	private class RecentFilesMenu extends org.fife.ui.RecentFilesMenu {
 
 		private TokenMakerMaker app;
-		
-		public RecentFilesMenu(TokenMakerMaker app, String[] history) {
+
+		RecentFilesMenu(TokenMakerMaker app, String[] history) {
 			super(app.getString("RecentFiles"), history);
 			setMnemonic(app.getString("RecentFiles.Mnemonic").charAt(0));
 			this.app = app;
 		}
-		
+
 		@Override
 		protected Action createOpenAction(final String fileFullPath) {
 			return new AbstractAction(getDisplayPath(fileFullPath)) {
@@ -208,7 +213,7 @@ class MenuBar extends org.fife.ui.app.MenuBar {
 				}
 			};
 		}
-		
+
 	}
 
 

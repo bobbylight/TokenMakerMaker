@@ -2,7 +2,7 @@ package org.fife.tmm;
 
 import java.awt.event.ActionEvent;
 
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 
@@ -12,7 +12,7 @@ import org.fife.ui.rtextfilechooser.RTextFileChooser;
  * @author Robert Futrell
  * @version 1.0
  */
-class OpenAction extends StandardAction {
+class OpenAction extends AppAction<TokenMakerMaker> {
 
 
 	/**
@@ -20,7 +20,7 @@ class OpenAction extends StandardAction {
 	 *
 	 * @param app The parent application.
 	 */
-	public OpenAction(TokenMakerMaker app) {
+	OpenAction(TokenMakerMaker app) {
 		super(app, app.getResourceBundle(), "Open");
 		setIcon(app.getIcon("/open.gif"));
 	}
@@ -28,7 +28,7 @@ class OpenAction extends StandardAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		TokenMakerMaker app = (TokenMakerMaker)getApplication();
+		TokenMakerMaker app = getApplication();
 		RTextFileChooser chooser = app.getFileChooser();
 		int rc = chooser.showOpenDialog(app);
 		if (rc!=RTextFileChooser.APPROVE_OPTION) {

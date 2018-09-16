@@ -1,6 +1,8 @@
 package org.fife.tmm;
 
-
+/**
+ * Format for integer literals.
+ */
 public enum IntLiteralFormat implements NumberFormat {
 
 	FORMAT1("{Digit}+", "512"),
@@ -16,7 +18,7 @@ public enum IntLiteralFormat implements NumberFormat {
 	 * @param format The format.
 	 * @param sample A sample of text that this format would match.
 	 */
-	private IntLiteralFormat(String format, String sample) {
+	IntLiteralFormat(String format, String sample) {
 		this.format = format;
 		this.sample = sample;
 	}

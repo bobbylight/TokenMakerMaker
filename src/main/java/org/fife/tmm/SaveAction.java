@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 
@@ -14,7 +14,7 @@ import org.fife.ui.rtextfilechooser.RTextFileChooser;
  * @author Robert Futrell
  * @version 1.0
  */
-class SaveAction extends StandardAction {
+class SaveAction extends AppAction<TokenMakerMaker> {
 
 
 	/**
@@ -22,7 +22,7 @@ class SaveAction extends StandardAction {
 	 *
 	 * @param app The parent application.
 	 */
-	public SaveAction(TokenMakerMaker app) {
+	SaveAction(TokenMakerMaker app) {
 		super(app, app.getResourceBundle(), "Save");
 		setIcon(app.getIcon("/save.gif"));
 	}
@@ -36,7 +36,7 @@ class SaveAction extends StandardAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		TokenMakerMaker app = (TokenMakerMaker)getApplication();
+		TokenMakerMaker app = getApplication();
 		RTextFileChooser chooser = app.getFileChooser();
 		int rc = chooser.showSaveDialog(app);
 		if (rc!=RTextFileChooser.APPROVE_OPTION) {

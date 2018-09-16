@@ -18,8 +18,8 @@ class WordsTableModel extends DefaultTableModel {
 	private TableRowSorter<TableModel> sorter;
 
 
-	public WordsTableModel() {
-		sorter = new TableRowSorter<TableModel>(this);
+	WordsTableModel() {
+		sorter = new TableRowSorter<>(this);
 	}
 
 

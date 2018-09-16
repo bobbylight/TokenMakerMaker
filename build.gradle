@@ -1,29 +1,36 @@
-['java', 'eclipse', 'distribution', 'maven', 'signing'].each { apply plugin: it }
+['java', 'checkstyle', 'distribution', 'maven', 'signing'].each { apply plugin: it }
 
 group = 'com.fifesoft'
+archivesBaseName = 'tokenMakerMaker'
 
 dependencies {
-	compile([ 'de.jflex:jflex:1.4.1' ], // group:name:version
-	        [ 'com.fifesoft.rtext:fife.common:2.6.0-SNAPSHOT' ],
-	        [ 'com.fifesoft:rsyntaxtextarea:2.6.0-SNAPSHOT' ],
-			[ 'com.miglayout:miglayout-swing:5.0' ],
-	        [ 'net.java.balloontip:balloontip:1.2.4.1' ])
-	testCompile 'junit:junit:4.+'
+
+    compile files("${projectDir.absolutePath}/../RSyntaxTextArea/RSyntaxTextArea/build/classes/java/main")
+    compile files('lib/balloontip-1.2.1.jar', 'lib/fife.common.jar', 'lib/JFlex.jar', 'lib/miglayout-swing-5.0.jar')
+
+	compile 'de.jflex:jflex:1.4.1'
+    compile 'com.fifesoft.rtext:fife.common:2.6.3'
+    compile 'com.fifesoft:rsyntaxtextarea:3.0.0-SNAPSHOT'
+    compile 'com.miglayout:miglayout-swing:5.0'
+    compile 'net.java.balloontip:balloontip:1.2.4.1'
+	testCompile 'junit:junit:4.12'
 }
 
-// Regenerate local gradlew
-task wrapper(type: Wrapper) {
-	gradleVersion = '2.0'
+wrapper {
+	gradleVersion '4.10'
+}
+
+checkstyle {
+    toolVersion = '8.11'
+    configFile = 'config/checkstyle/checkstyle.xml' as File
 }
 
 compileJava {
 	sourceCompatibility javaVersion
 	targetCompatibility javaVersion
-	classpath += files("${projectDir.absolutePath}/../RSyntaxTextArea/build/classes/main",
-		"lib/balloontip-1.2.1.jar", "lib/fife.common.jar", "lib/JFlex.jar", "lib/miglayout-swing-5.0.jar")
 	options.debug = true
 	options.debugOptions.debugLevel = 'source,vars,lines'
-	options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+	options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
 }
 
 ext.sharedManifest = manifest {
@@ -59,7 +66,7 @@ distZip {
 	include '**'
 	from "$projectDir/../RSyntaxTextArea/build/libs"
 	include 'rsyntaxtextarea-${version}.jar'
-	rename { return baseName + '-' + version + '/' + it; }
+	rename { return baseName + '-' + version + '/' + it }
 }
 distZip.dependsOn jar
 srcDistZip.classifier = 'src'
@@ -77,8 +84,10 @@ srcDistZip {
 	include '.settings/**'
 }
 
-task buildSourceForgeZips << {
-	println "Building zip files for SourceForge"
+task buildSourceForgeZips {
+    doLast {
+        println "Building zip files for SourceForge"
+    }
 }
 buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
 

@@ -31,7 +31,7 @@ abstract class TmmPanel {
 	protected JPanel panel;
 
 
-	public TmmPanel(TokenMakerMaker app) {
+	TmmPanel(TokenMakerMaker app) {
 		this.app = app;
 		panel = UIUtil.newTabbedPanePanel();
 		panel.putClientProperty(PROPERTY_TMM_PANEL, this);
@@ -62,7 +62,7 @@ abstract class TmmPanel {
 
 	/**
 	 * Creates a non-opaque check box.
-	 * 
+	 *
 	 * @param text The text for the check box.
 	 * @param selected Whether it is initially selected.
 	 * @return The check box.
@@ -75,7 +75,7 @@ abstract class TmmPanel {
 	}
 
 
-	private static final int getIndexOf(Container parent, Component c) {
+	private static int getIndexOf(Container parent, Component c) {
 		for (int i=0; i<parent.getComponentCount(); i++) {
 			if (parent.getComponent(i)==c) {
 				return i;

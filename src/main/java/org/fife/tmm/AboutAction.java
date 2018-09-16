@@ -2,7 +2,7 @@
  * 04/14/2012
  *
  * AboutAction.java - Displays the About dialog.
- * 
+ *
  * This library is distributed under a modified BSD license.  See the included
  * RSyntaxTextArea.License.txt file for details.
  */
@@ -10,7 +10,7 @@ package org.fife.tmm;
 
 import java.awt.event.ActionEvent;
 
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 
 
 /**
@@ -19,7 +19,7 @@ import org.fife.ui.app.StandardAction;
  * @author Robert Futrell
  * @version 1.0
  */
-public class AboutAction extends StandardAction {
+public class AboutAction extends AppAction<TokenMakerMaker> {
 
 
 	/**
@@ -39,7 +39,7 @@ public class AboutAction extends StandardAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+		TokenMakerMaker tmm = getApplication();
 		TmmAboutDialog dialog = new TmmAboutDialog(tmm);
 		dialog.setVisible(true);
 	}

@@ -27,7 +27,7 @@ class FunctionsPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public FunctionsPanel(TokenMakerMaker app) {
+	FunctionsPanel(TokenMakerMaker app) {
 
 		super(app);
 		panel.setLayout(new BorderLayout());
@@ -77,7 +77,7 @@ class FunctionsPanel extends TmmPanel {
 	 */
 	private class FunctionsFromFileAction extends AbstractAction {
 
-		public FunctionsFromFileAction() {
+		FunctionsFromFileAction() {
 			putValue(NAME, app.getString("AddFromFile"));
 		}
 

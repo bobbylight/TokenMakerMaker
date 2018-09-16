@@ -111,7 +111,7 @@ public class NumbersPanel extends TmmPanel {
 	 * @return The combo box.
 	 */
 	private JComboBox createCombo(Object[] values, Font font) {
-		JComboBox combo = new JComboBox(values);
+		JComboBox<Object> combo = new JComboBox<>(values);
 		combo.setFont(font);
 		combo.addActionListener(listener);
 		return combo;

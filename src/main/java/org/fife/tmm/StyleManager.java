@@ -16,14 +16,14 @@ import javax.swing.text.StyleContext;
  * @version 1.0
  * @see ProcessOutputType
  */
-public class StyleManager {
+final class StyleManager {
 
 	private Map<ProcessOutputType, Style> map;
 
 	/**
 	 * The singleton instance of this class.
 	 */
-	private static StyleManager INSTANCE = new StyleManager();
+	private static StyleManager instance = new StyleManager();
 
 
 	/**
@@ -39,7 +39,7 @@ public class StyleManager {
 	 * @return The singleton instance.
 	 */
 	public static StyleManager get() {
-		return INSTANCE;
+		return instance;
 	}
 
 

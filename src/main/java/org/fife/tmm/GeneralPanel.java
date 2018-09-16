@@ -6,7 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.fife.ui.SpecialValueComboBox;
+import org.fife.ui.LabelValueComboBox;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -21,7 +21,7 @@ class GeneralPanel extends TmmPanel {
 
 	private JTextField packageField;
 	private JTextField classNameField;
-	private SpecialValueComboBox extendedClassCombo;
+	private LabelValueComboBox<String, String> extendedClassCombo;
 	private JTextArea classCommentArea;
 	private JCheckBox caseSensitiveCB;
 	private JCheckBox booleanLiteralCB;
@@ -32,7 +32,7 @@ class GeneralPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public GeneralPanel(TokenMakerMaker app) {
+	GeneralPanel(TokenMakerMaker app) {
 
 		super(app);
 
@@ -42,9 +42,9 @@ class GeneralPanel extends TmmPanel {
 				app.getString("TokenMakerType.CDerivedSyntax"),
 				app.getString("TokenMakerType.AllOthers"),
 		};
-		extendedClassCombo = new SpecialValueComboBox();
-		extendedClassCombo.addSpecialItem(baseClasses[0], "AbstractJFlexCTokenMaker");
-		extendedClassCombo.addSpecialItem(baseClasses[1], "AbstractJFlexTokenMaker");
+		extendedClassCombo = new LabelValueComboBox<String, String>();
+		extendedClassCombo.addLabelValuePair(baseClasses[0], "AbstractJFlexCTokenMaker");
+		extendedClassCombo.addLabelValuePair(baseClasses[1], "AbstractJFlexTokenMaker");
 		classCommentArea = new JTextArea(10, 50);
 		caseSensitiveCB = createCheckBox(app.getString("CaseSensitive"), true);
 		booleanLiteralCB = createCheckBox(app.getString("BooleanLiterals"), false);
@@ -71,7 +71,7 @@ class GeneralPanel extends TmmPanel {
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setClassDoc(classCommentArea.getText());
 		info.setClassName(classNameField.getText().trim());
-		info.setExtendedClass(extendedClassCombo.getSelectedSpecialItem());
+		info.setExtendedClass(extendedClassCombo.getSelectedValue());
 		info.setIgnoreCase(!caseSensitiveCB.isSelected());
 		info.setBooleanLiterals(booleanLiteralCB.isSelected());
 		info.setPackage(packageField.getText().trim());

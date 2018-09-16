@@ -27,7 +27,7 @@ class DataTypesPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public DataTypesPanel(TokenMakerMaker app) {
+	DataTypesPanel(TokenMakerMaker app) {
 
 		super(app);
 		panel.setLayout(new BorderLayout());
@@ -45,27 +45,18 @@ class DataTypesPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setDataTypes(dataTypesTable.getWords());
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		dataTypesTable.setWords(info.getDataTypes());
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean verifyInput() {
 		return true;
@@ -77,7 +68,7 @@ class DataTypesPanel extends TmmPanel {
 	 */
 	private class DataTypesFromFileAction extends AbstractAction {
 
-		public DataTypesFromFileAction() {
+		DataTypesFromFileAction() {
 			putValue(NAME, app.getString("AddFromFile"));
 		}
 

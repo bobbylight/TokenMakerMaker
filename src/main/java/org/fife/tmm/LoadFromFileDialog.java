@@ -52,7 +52,7 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 	 *
 	 * @param app The parent application.
 	 */
-	public LoadFromFileDialog(TokenMakerMaker app, String typeKey) {
+	LoadFromFileDialog(TokenMakerMaker app, String typeKey) {
 
 		super(app);
 		this.app = app;

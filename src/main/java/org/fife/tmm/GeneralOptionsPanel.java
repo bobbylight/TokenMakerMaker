@@ -40,13 +40,13 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	private FSATextField classDirField;
 	private RTextFileChooser fileChooser;
 	private RDirectoryChooser dirChooser;
-	private JComboBox themeCombo;
+	private JComboBox<Object> themeCombo;
 	private Listener listener;
 
 	private static final String PROP_DIR		= "Directory";
 
 
-	public GeneralOptionsPanel(TokenMakerMaker app, String title) {
+	GeneralOptionsPanel(TokenMakerMaker app, String title) {
 
 		super(title);
 		this.app = app;
@@ -70,7 +70,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		browseButton.setActionCommand("JavacLocation.Browse");
 		browseButton.addActionListener(this);
 		temp.add(browseButton);
-		
+
 		temp2.add(temp);
 		temp2.add(Box.createVerticalStrut(5));
 
@@ -112,7 +112,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 			new ThemeItem(app.getString("Options.General.Rsta.Theme.Dark"),         "dark.xml"),
 			new ThemeItem(app.getString("Options.General.Rsta.Theme.VisualStudio"), "vs.xml"),
 		};
-		themeCombo = new JComboBox(themeItems);
+		themeCombo = new JComboBox<>(themeItems);
 		temp.add(themeCombo);
 
 		temp2.add(temp);
@@ -342,7 +342,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		private String text;
 		private String theme;
 
-		public ThemeItem(String text, String theme) {
+		ThemeItem(String text, String theme) {
 			this.text = text;
 			this.theme = theme;
 		}

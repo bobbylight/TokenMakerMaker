@@ -1,6 +1,9 @@
 package org.fife.tmm;
 
 
+/**
+ * Format for hex literals.
+ */
 public enum HexLiteralFormat implements NumberFormat {
 
 	FORMAT1("0x{HexDigit}+", "0x0af"),
@@ -16,7 +19,7 @@ public enum HexLiteralFormat implements NumberFormat {
 	 * @param format The format.
 	 * @param sample A sample of text that this format would match.
 	 */
-	private HexLiteralFormat(String format, String sample) {
+	HexLiteralFormat(String format, String sample) {
 		this.format = format;
 		this.sample = sample;
 	}

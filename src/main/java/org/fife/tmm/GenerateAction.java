@@ -4,7 +4,7 @@ package org.fife.tmm;
 import java.awt.event.ActionEvent;
 import java.io.File;
 //import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
+//import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 
 import org.fife.io.ProcessRunner;
 import org.fife.io.ProcessRunnerOutputListener;
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 
 
 /**
@@ -27,7 +27,7 @@ import org.fife.ui.app.StandardAction;
  * @author Robert Futrell
  * @version 1.0
  */
-class GenerateAction extends StandardAction {
+class GenerateAction extends AppAction<TokenMakerMaker> {
 
 	private TokenMakerInfo tmi;
 
@@ -37,7 +37,7 @@ class GenerateAction extends StandardAction {
 	 *
 	 * @param app The parent application.
 	 */
-	public GenerateAction(TokenMakerMaker app) {
+	GenerateAction(TokenMakerMaker app) {
 		super(app, app.getResourceBundle(), "Generate");
 	}
 
@@ -50,7 +50,7 @@ class GenerateAction extends StandardAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+		TokenMakerMaker tmm = getApplication();
 		if (!tmm.verifyInput()) {
 			return;
 		}
@@ -90,11 +90,11 @@ class GenerateAction extends StandardAction {
 	private boolean compileJavaSource(File sourceRootDir, String sourceFile,
 									File classDir) {
 
-		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+		TokenMakerMaker tmm = getApplication();
 
 		File rstaJar = getRstaJar(tmm);
 //		if (rstaJar==null || !rstaJar.isFile()) { // Debugging in Eclipse
-//			
+//
 //			File installDir = new File(tmm.getInstallLocation());
 //			File rstaBuildDir = new File(installDir, "../RSyntaxTextArea/build/libs");
 //			if (rstaBuildDir.isDirectory()) {
@@ -114,7 +114,7 @@ class GenerateAction extends StandardAction {
 //				tmm.displayException(fnfe);
 //				return false;
 //			}
-//			
+//
 //		}
 
 		File javac = tmm.getJavac();
@@ -152,13 +152,13 @@ class GenerateAction extends StandardAction {
 
 			String text = tmm.getString("Output.Compiling");
 			tmm.getOutputPanel().appendOutput("\n\n" + text, ProcessOutputType.HEADER_INFO);
-			
+
 			pr.setOutputListener(new CompilingOutputListener(classDir, sourceFile));
 			Thread thread = new Thread(new ProcessRunnerRunnable(pr));
 			thread.start();
 
 //		} catch () {
-//			
+//
 //		}
 
 		return success;
@@ -168,7 +168,7 @@ class GenerateAction extends StandardAction {
 
 	private void generateJavaSource(File flexFile) {
 
-		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+		TokenMakerMaker tmm = getApplication();
 		String outputDir = flexFile.getParentFile().getAbsolutePath();
 
 		File javaFile = Utils.getFileWithNewExtension(flexFile, "java");
@@ -178,8 +178,8 @@ class GenerateAction extends StandardAction {
 
 		String installDir = tmm.getInstallLocation();
 		File skeletonFile = new File(installDir, "skeleton.default");
-		if (!skeletonFile.isFile()) { // Debugging in Eclipse
-			skeletonFile = new File(installDir, "src/main/dist/skeleton.default");
+		if (!skeletonFile.isFile()) { // Debugging in an IDE
+			skeletonFile = new File(new File("."), "src/main/dist/skeleton.default");
 		}
 
 		File jflexJar = getJFlexJar(tmm);
@@ -207,7 +207,7 @@ class GenerateAction extends StandardAction {
 	 *
 	 * @return All classpath entries.
 	 */
-	private static final String[] getClasspathEntries() {
+	private static String[] getClasspathEntries() {
 
 		// When run from an IDE such as Eclipse, jars are on the command line
 		String[] entries = System.getProperty("java.class.path").
@@ -246,7 +246,7 @@ class GenerateAction extends StandardAction {
 	 * @return The (first) matching classpath entry, or <code>null</code> if
 	 *         no match is found.
 	 */
-	private static final String getClasspathEntryMatching(String[] entries,
+	private static String getClasspathEntryMatching(String[] entries,
 			String regex) {
 		Pattern p = Pattern.compile(regex);
 		for (String entry : entries) {
@@ -315,22 +315,20 @@ class GenerateAction extends StandardAction {
 //		}
 
 		// Compile the generated Java source.
-		TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+		TokenMakerMaker tmm = getApplication();
 		compileJavaSource(tmm.getSourceOutputDirectory(), sourceFile,
 								tmm.getClassOutputDirectory());
 
 	}
 
-
+    /**
+     * Listens for a process's output.
+     */
 	private class BaseOutputListener implements ProcessRunnerOutputListener {
 
 		@Override
 		public void processCompleted(final Process p, final int rc, final Throwable t) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					processCompletedEdt(p, rc, t);
-				}
-			});
+			SwingUtilities.invokeLater(() -> processCompletedEdt(p, rc, t));
 		}
 
 		/**
@@ -345,34 +343,34 @@ class GenerateAction extends StandardAction {
 		 *        exited cleanly.
 		 */
 		protected void processCompletedEdt(Process p, int rc, Throwable t) {
-			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+			TokenMakerMaker tmm = getApplication();
 			String text = tmm.getString("Output.ProcessRC", Integer.toString(rc));
 			tmm.getOutputPanel().appendOutput(text, ProcessOutputType.FOOTER_INFO);
 		}
 
 		@Override
 		public void outputWritten(Process p, final String line, final boolean stderr) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
-					//ProcessOutputType type = stderr ? ProcessOutputType.STDERR :
-					//	ProcessOutputType.STDOUT;
-					ProcessOutputType type = ProcessOutputType.STDOUT;
-					// JFlex always writes to stderr???
-					tmm.getOutputPanel().appendOutput(line, type);
-				}
-			});
+			SwingUtilities.invokeLater(() -> {
+                TokenMakerMaker tmm = getApplication();
+                //ProcessOutputType type = stderr ? ProcessOutputType.STDERR :
+                //	ProcessOutputType.STDOUT;
+                ProcessOutputType type = ProcessOutputType.STDOUT;
+                // JFlex always writes to stderr???
+                tmm.getOutputPanel().appendOutput(line, type);
+            });
 		}
 
 	}
 
-
+    /**
+     * Listens for compiler output.
+     */
 	private class CompilingOutputListener extends BaseOutputListener {
 
 		private File dir;
 		private String sourceFile;
 
-		public CompilingOutputListener(File dir, String sourceFile) {
+		CompilingOutputListener(File dir, String sourceFile) {
 			this.dir = dir;
 			this.sourceFile = sourceFile;
 		}
@@ -381,7 +379,7 @@ class GenerateAction extends StandardAction {
 		protected void processCompletedEdt(Process p, int rc, Throwable t) {
 
 			super.processCompletedEdt(p, rc, t);
-			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+			TokenMakerMaker tmm = getApplication();
 
 			if (rc==0) {
 				String msg = "\n\n" + tmm.getString("Output.LaunchingTesterWindow");
@@ -404,12 +402,14 @@ class GenerateAction extends StandardAction {
 
 	}
 
-
+    /**
+     * Listens for JFlex output.
+     */
 	private class JFlexOutputListener extends BaseOutputListener {
 
 		private File flexFile;
 
-		public JFlexOutputListener(File flexFile) {
+		JFlexOutputListener(File flexFile) {
 			this.flexFile = flexFile;
 		}
 
@@ -421,7 +421,7 @@ class GenerateAction extends StandardAction {
 				processGeneratedJavaSource(javaFile);
 			}
 			else {
-				TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+				TokenMakerMaker tmm = getApplication();
 				String error = "\n" + tmm.getString("Output.TerminalError");
 				tmm.getOutputPanel().appendOutput(error, ProcessOutputType.TERMINAL_ERROR);
 			}
@@ -429,17 +429,19 @@ class GenerateAction extends StandardAction {
 
 	}
 
-
+	/**
+	 * Runs a process.
+	 */
 	private class ProcessRunnerRunnable implements Runnable {
 
 		private ProcessRunner pr;
 
-		public ProcessRunnerRunnable(ProcessRunner pr) {
+		ProcessRunnerRunnable(ProcessRunner pr) {
 			this.pr = pr;
 		}
 
 		public void run() {
-			TokenMakerMaker tmm = (TokenMakerMaker)getApplication();
+			TokenMakerMaker tmm = getApplication();
 			String cmd = tmm.getString("Output.RunningCommand", pr.getCommandLineString());
 			tmm.getOutputPanel().appendOutput(cmd, ProcessOutputType.HEADER_INFO);
 			pr.run();
@@ -448,19 +450,19 @@ class GenerateAction extends StandardAction {
 	}
 
 
-	/**
-	 * A file filter that identifies files whose names are of the format
-	 * "<code>rsyntaxtextarea-n.n.n.jar</code>" and
-	 * "<code>rsyntaxtextarea-n.n.n-SNAPSHOT.jar</code>".
-	 */
-	private static class RstaJarFilter implements FilenameFilter {
-
-		@Override
-		public boolean accept(File dir, String name) {
-			return name.matches("rsyntaxtextarea\\-([\\d\\.]+)(?:-SNAPSHOT)?\\.jar");
-		}
-
-	}
+//	/**
+//	 * A file filter that identifies files whose names are of the format
+//	 * "<code>rsyntaxtextarea-n.n.n.jar</code>" and
+//	 * "<code>rsyntaxtextarea-n.n.n-SNAPSHOT.jar</code>".
+//	 */
+//	private static class RstaJarFilter implements FilenameFilter {
+//
+//		@Override
+//		public boolean accept(File dir, String name) {
+//			return name.matches("rsyntaxtextarea\\-([\\d\\.]+)(?:-SNAPSHOT)?\\.jar");
+//		}
+//
+//	}
 
 
 }

@@ -27,7 +27,7 @@ class KeywordsPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public KeywordsPanel(TokenMakerMaker app) {
+	KeywordsPanel(TokenMakerMaker app) {
 
 		super(app);
 		panel.setLayout(new BorderLayout());
@@ -45,27 +45,18 @@ class KeywordsPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setKeywords(keywordsTable.getWords());
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		keywordsTable.setWords(info.getKeywords());
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean verifyInput() {
 		return true;
@@ -77,7 +68,7 @@ class KeywordsPanel extends TmmPanel {
 	 */
 	private class KeywordsFromFileAction extends AbstractAction {
 
-		public KeywordsFromFileAction() {
+		KeywordsFromFileAction() {
 			putValue(NAME, app.getString("AddFromFile"));
 		}
 

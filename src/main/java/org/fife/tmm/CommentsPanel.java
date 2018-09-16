@@ -32,7 +32,7 @@ class CommentsPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public CommentsPanel(TokenMakerMaker app) {
+	CommentsPanel(TokenMakerMaker app) {
 
 		super(app);
 		Listener listener = new Listener();
@@ -70,9 +70,6 @@ class CommentsPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setDocCommentEnd(docEndDelimField.getText());
@@ -86,9 +83,6 @@ class CommentsPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		lineCommentsEnabledCB.setSelected(info.getLineCommentsEnabled());
@@ -105,9 +99,6 @@ class CommentsPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean verifyInput() {
 
@@ -150,6 +141,9 @@ class CommentsPanel extends TmmPanel {
 	}
 
 
+	/**
+	 * Listens for events in this panel.
+	 */
 	public class Listener implements ActionListener {
 
 		@Override

@@ -53,7 +53,7 @@ public class Prefs extends GUIApplicationPrefs<TokenMakerMaker> {
 	}
 
 
-	private static final File getDefaultJavac() {
+	private static File getDefaultJavac() {
 
 		String javaHome = System.getProperty("java.home");
 

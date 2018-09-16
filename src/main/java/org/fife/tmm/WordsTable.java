@@ -22,7 +22,7 @@ class WordsTable extends ModifiableTable {
 	private TokenMakerMaker app;
 	private String type;
 
-	public WordsTable(TokenMakerMaker app, String root) {
+	WordsTable(TokenMakerMaker app, String root) {
 		super(new DefaultTableModel()); // Unfortunate
 		WordsTableModel model = new WordsTableModel();
 		model.setColumnCount(1);
@@ -68,7 +68,10 @@ class WordsTable extends ModifiableTable {
 	}
 
 
-	private class KeywordRowHandler extends AbstractRowHandler {
+    /**
+     * Row handler for the keywords table.
+     */
+	private final class KeywordRowHandler extends AbstractRowHandler {
 
 		private TokenMakerMaker parent;
 

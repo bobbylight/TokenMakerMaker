@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.fife.ui.OptionsDialog;
 import org.fife.ui.OptionsDialogPanel;
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 import org.fife.ui.rtextfilechooser.FileChooserFavoritesOptionPanel;
 import org.fife.ui.rtextfilechooser.RTextFileChooserOptionPanel;
 
@@ -17,7 +17,7 @@ import org.fife.ui.rtextfilechooser.RTextFileChooserOptionPanel;
  * @author Robert Futrell
  * @version 1.0
  */
-public class OptionsAction extends StandardAction {
+public class OptionsAction extends AppAction<TokenMakerMaker> {
 
 	private OptionsDialog optionsDialog;
 
@@ -31,7 +31,7 @@ public class OptionsAction extends StandardAction {
 	public void actionPerformed(ActionEvent e) {
 
 		if (optionsDialog==null) {
-			TokenMakerMaker app = (TokenMakerMaker)getApplication();
+			TokenMakerMaker app = getApplication();
 			optionsDialog = createOptionsDialog();
 			optionsDialog.setLocationRelativeTo(app);
 		}
@@ -44,7 +44,7 @@ public class OptionsAction extends StandardAction {
 
 	private OptionsDialog createOptionsDialog() {
 
-		TokenMakerMaker app = (TokenMakerMaker)getApplication();
+		TokenMakerMaker app = getApplication();
 		List<OptionsDialogPanel> panels = new ArrayList<OptionsDialogPanel>();
 
 		String title = app.getString("Options.General");

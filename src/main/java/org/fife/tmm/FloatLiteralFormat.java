@@ -1,6 +1,8 @@
 package org.fife.tmm;
 
-
+/**
+ * Number format for floats.
+ */
 public enum FloatLiteralFormat implements NumberFormat {
 
 	FORMAT1("({Digit}+)(\".\"{Digit}+)?(e[+-]?{Digit}+)? | ({Digit}+)?(\".\"{Digit}+)(e[+-]?{Digit}+)?",
@@ -18,7 +20,7 @@ public enum FloatLiteralFormat implements NumberFormat {
 	 * @param format The format.
 	 * @param sample A sample of text that this format would match.
 	 */
-	private FloatLiteralFormat(String format, String sample) {
+	FloatLiteralFormat(String format, String sample) {
 		this.format = format;
 		this.sample = sample;
 	}

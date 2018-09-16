@@ -24,7 +24,7 @@ class OperatorsPanel extends TmmPanel {
 	 *
 	 * @param app The parent application.
 	 */
-	public OperatorsPanel(TokenMakerMaker app) {
+	OperatorsPanel(TokenMakerMaker app) {
 		super(app);
 		operatorsTable = new WordsTable(app, "Operator");
 		panel.setLayout(new BorderLayout());

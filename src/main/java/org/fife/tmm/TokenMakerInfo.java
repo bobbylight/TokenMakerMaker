@@ -82,7 +82,7 @@ public class TokenMakerInfo {
 	private final Pattern p = Pattern.compile("@[\\w\\d\\.]+@");
 	private static final String FILE_ENCODING		= "UTF-8";
 
-	private static final String toEscapeInCharClasses = "|(){}[]<>\\.*+?^$/\"~!";
+	private static final String TO_ESCAPE_IN_CHAR_CLASSES = "|(){}[]<>\\.*+?^$/\"~!";
 
 	private static final String ATTR_ENABLED			= "enabled";
 	private static final String ATTR_END				= "end";
@@ -203,7 +203,7 @@ public class TokenMakerInfo {
 					"{MLCBegin}	{ start = zzMarkedPos-" + mlcStartLen + "; yybegin(MLC); }");
 			char ch = mlcEnd.charAt(0);
 			String temp = Character.toString(ch);
-			if (toEscapeInCharClasses.indexOf(ch)>-1) {
+			if (TO_ESCAPE_IN_CHAR_CLASSES.indexOf(ch)>-1) {
 				temp = "\\" + temp;
 			}
 			flexValuesMap.put("mlc.end.first.char", temp);
@@ -236,7 +236,7 @@ public class TokenMakerInfo {
 					"{DocCommentBegin}	{ start = zzMarkedPos-" + docStartLen + "; yybegin(DOCCOMMENT); }");
 			char ch = docEnd.charAt(0);
 			String temp = Character.toString(ch);
-			if (toEscapeInCharClasses.indexOf(ch)>-1) {
+			if (TO_ESCAPE_IN_CHAR_CLASSES.indexOf(ch)>-1) {
 				temp = "\\" + temp;
 			}
 			flexValuesMap.put("doc.end.first.char", temp);
@@ -261,10 +261,12 @@ public class TokenMakerInfo {
 			String lineCommentStart = getLineCommentStart();
 			int eolStartLen = lineCommentStart.length();
 			flexValuesMap.put("possible.eol.macro", "LineCommentBegin			= \"" + lineCommentStart + "\"");
-			flexValuesMap.put("possible.eol.check", "{LineCommentBegin}			{ start = zzMarkedPos-" + eolStartLen + "; yybegin(EOL_COMMENT); }");
+			flexValuesMap.put("possible.eol.check", "{LineCommentBegin}			{ start = zzMarkedPos-" + eolStartLen +
+                    "; yybegin(EOL_COMMENT); }");
 			flexValuesMap.put("possible.eol.state", loadResourceText("org/fife/tmm/eol.state.txt"));
 			flexValuesMap.put("possible.eol.state.definition", "%state EOL_COMMENT");
-			flexValuesMap.put("line.comment.start.end.body", "return new String[] { \"" + lineCommentStart + "\", null };");
+			flexValuesMap.put("line.comment.start.end.body", "return new String[] { \"" + lineCommentStart +
+                    "\", null };");
 		}
 		else {
 			flexValuesMap.put("possible.eol.macro", "/* No line comments */");
@@ -334,7 +336,8 @@ public class TokenMakerInfo {
 					"ErrorCharLiteral			= ({UnclosedCharLiteral}[\\\\'])");
 				flexValuesMap.put("possible.char.check",
 					"{CharLiteral}				{ addToken(Token.LITERAL_CHAR); }" + newline +
-					"{UnclosedCharLiteral}		{ addToken(Token.ERROR_CHAR); addNullToken(); return firstToken; }" + newline +
+					"{UnclosedCharLiteral}		{ addToken(Token.ERROR_CHAR); addNullToken(); return firstToken; }" +
+                            newline +
 					"{ErrorCharLiteral}			{ addToken(Token.ERROR_CHAR); }");
 				flexValuesMap.put("possible.char.state.definition", "/* No char state */");
 				flexValuesMap.put("possible.char.state", "/* No char state */");
@@ -356,16 +359,19 @@ public class TokenMakerInfo {
 					"\\\\\"							{ start = zzMarkedPos-1; yybegin(STRING); }");
 				flexValuesMap.put("possible.string.state.definition", "%state STRING");
 				flexValuesMap.put("possible.string.state", loadResourceText("org/fife/tmm/escapableStrings.state.txt"));
-				flexValuesMap.put("possible.string.switch.case", loadResourceText("org/fife/tmm/string.switch.case.txt"));
+				flexValuesMap.put("possible.string.switch.case",
+                        loadResourceText("org/fife/tmm/string.switch.case.txt"));
 			}
 			else {
 				flexValuesMap.put("possible.string.macros",
-					"StringLiteral				= ([\\\\\"]({AnyCharacterButDoubleQuoteOrBackSlash}|{Escape})*[\\\\\"])" + newline +
+					"StringLiteral				= " +
+                            "([\\\\\"]({AnyCharacterButDoubleQuoteOrBackSlash}|{Escape})*[\\\\\"])" + newline +
 					"UnclosedStringLiteral		= ([\\\\\"]([\\\\\\\\].|[^\\\\\\\\\\\\\"])*[^\\\\\"]?)" + newline +
 					"ErrorStringLiteral			= ({UnclosedStringLiteral}[\\\\\"])");
 				flexValuesMap.put("possible.string.check",
 					"{StringLiteral}				{ addToken(Token.LITERAL_STRING_DOUBLE_QUOTE); }" + newline +
-					"{UnclosedStringLiteral}		{ addToken(Token.ERROR_STRING_DOUBLE); addNullToken(); return firstToken; }" + newline +
+					"{UnclosedStringLiteral}		" +
+                            "{ addToken(Token.ERROR_STRING_DOUBLE); addNullToken(); return firstToken; }" + newline +
 					"{ErrorStringLiteral}			{ addToken(Token.ERROR_STRING_DOUBLE); }");
 				flexValuesMap.put("possible.string.state.definition", "/* No string state */");
 				flexValuesMap.put("possible.string.state", "/* No string state */");
@@ -757,7 +763,7 @@ public class TokenMakerInfo {
 	 * @param s The string to possibly escape characters in.
 	 * @return The string with characters possibly escaped.
 	 */
-	private static final String possiblyEscapeStringChars(String s) {
+	private static String possiblyEscapeStringChars(String s) {
 		StringBuilder sb = new StringBuilder();
 		for (int i=0; i<s.length(); i++) {
 			char ch = s.charAt(i);

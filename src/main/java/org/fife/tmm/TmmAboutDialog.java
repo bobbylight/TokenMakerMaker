@@ -2,7 +2,7 @@
  * 04/14/2012
  *
  * TmmAboutDialog.java - The About dialog for this application.
- * 
+ *
  * This library is distributed under a modified BSD license.  See the included
  * RSyntaxTextArea.License.txt file for details.
  */
@@ -51,7 +51,7 @@ class TmmAboutDialog extends EscapableDialog {
 	private TokenMakerMaker app;
 
 
-	public TmmAboutDialog(TokenMakerMaker parent) {
+	TmmAboutDialog(TokenMakerMaker parent) {
 
 		super(parent);
 		this.app = parent;
@@ -161,7 +161,7 @@ class TmmAboutDialog extends EscapableDialog {
 	private static class TopBorder extends AbstractBorder {
 
 		@Override
-		public Insets getBorderInsets(Component c) { 
+		public Insets getBorderInsets(Component c) {
 			return getBorderInsets(c, new Insets(0, 0, 0, 0));
 		}
 
@@ -191,7 +191,7 @@ class TmmAboutDialog extends EscapableDialog {
 	 */
 	private class LibrariesDialog extends EscapableDialog {
 
-		public LibrariesDialog() {
+		LibrariesDialog() {
 
 			super(TmmAboutDialog.this);
 
@@ -203,20 +203,20 @@ class TmmAboutDialog extends EscapableDialog {
 			JLabel jflexLabel = new JLabel("JFlex:");
 			Hyperlink jflexLink = new Hyperlink("http://jflex.de");
 			JLabel rtextLabel = new JLabel("RText:");
-			Hyperlink rtextLink = new Hyperlink("http://fifesoft.com/rtext");
+			Hyperlink rtextLink = new Hyperlink("http://bobbylight.github.io/RText/");
 			JLabel migLabel = new JLabel("MigLayout:");
 			Hyperlink migLink = new Hyperlink("http://miglayout.com");
 			JLabel balloonLabel = new JLabel("BalloonTips:");
 			Hyperlink balloonLink = new Hyperlink("http://balloontip.dev.java.net");
 
 			if (getComponentOrientation().isLeftToRight()) {
-				temp.add(jflexLabel);        temp.add(jflexLink);
+				temp.add(jflexLabel);       temp.add(jflexLink);
 				temp.add(rtextLabel);       temp.add(rtextLink);
 				temp.add(migLabel);         temp.add(migLink);
 				temp.add(balloonLabel);     temp.add(balloonLink);
 			}
 			else {
-				temp.add(jflexLink);        temp.add(jflexLabel);
+				temp.add(jflexLink);       temp.add(jflexLabel);
 				temp.add(rtextLink);       temp.add(rtextLabel);
 				temp.add(migLink);         temp.add(migLabel);
 				temp.add(balloonLink);     temp.add(balloonLabel);

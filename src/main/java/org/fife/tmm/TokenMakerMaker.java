@@ -2,7 +2,7 @@
  * 07/19/2009
  *
  * TokenMakerMaker.java - The main application window.
- * 
+ *
  * This library is distributed under a modified BSD license.  See the included
  * RSyntaxTextArea.License.txt file for details.
  */
@@ -37,7 +37,7 @@ import org.fife.ui.OS;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.StatusBar;
 import org.fife.ui.app.AbstractGUIApplication;
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 import org.fife.ui.rtextfilechooser.FileChooserOwner;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import org.fife.ui.rtextfilechooser.filters.ExtensionFileFilter;
@@ -73,7 +73,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	private String theme;
 	private HelpDialog helpDialog;
 
-	private static final String VERSION = "2.6.0";
+	private static final String VERSION = "3.0.0";
 
 	private static final String BUNDLE_NAME	= "org.fife.tmm.TokenMakerMaker";
 
@@ -97,20 +97,20 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 
 		ResourceBundle msg = getResourceBundle();
 
-		StandardAction action = new OpenAction(this);
+		AppAction<TokenMakerMaker> action = new OpenAction(this);
 		addAction(OPEN_ACTION_KEY, action);
 
 		action = new SaveAction(this);
 		addAction(SAVE_ACTION_KEY, action);
 
-		action = new OptionsAction(this);
+		action = new org.fife.tmm.OptionsAction(this);
 		action.setIcon(getIcon("/options.gif"));
 		addAction(OPTIONS_ACTION_KEY, action);
 
-		action = new ExitAction(this, msg, "Exit");
+		action = new ExitAction<TokenMakerMaker>(this, msg, "Exit");
 		addAction(EXIT_ACTION_KEY, action);
 
-		action = new HelpAction(this, msg, "Help");
+		action = new HelpAction<TokenMakerMaker>(this, msg, "Help");
 		action.setIcon(getIcon("/help.gif"));
 		addAction(HELP_ACTION_KEY, action);
 
@@ -396,7 +396,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	 *
 	 * @return The shortcuts file.
 	 */
-	private static final File getShortcutsFile() {
+	private static File getShortcutsFile() {
 		return new File(System.getProperty("user.home"),
 				".tmm/shortcuts.properties");
 	}

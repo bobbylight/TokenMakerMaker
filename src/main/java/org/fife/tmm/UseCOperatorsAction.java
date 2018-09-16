@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fife.ui.app.StandardAction;
+import org.fife.ui.app.AppAction;
 
 
 /**
@@ -14,12 +14,12 @@ import org.fife.ui.app.StandardAction;
  * @author Robert Futrell
  * @version 1.0
  */
-class UseCOperatorsAction extends StandardAction {
+class UseCOperatorsAction extends AppAction<TokenMakerMaker> {
 
 	private WordsTable table;
 
 
-	public UseCOperatorsAction(TokenMakerMaker tmm, WordsTable table) {
+	UseCOperatorsAction(TokenMakerMaker tmm, WordsTable table) {
 		super(tmm, tmm.getResourceBundle(), "Button.COperators");
 		this.table = table;
 	}

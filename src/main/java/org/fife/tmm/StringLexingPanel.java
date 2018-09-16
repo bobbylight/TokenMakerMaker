@@ -31,7 +31,7 @@ class StringLexingPanel extends TmmPanel {
 	private JTextField verbatimDelimField;
 
 
-	public StringLexingPanel(TokenMakerMaker app) {
+	StringLexingPanel(TokenMakerMaker app) {
 
 		super(app);
 		Listener listener = new Listener();
@@ -88,9 +88,6 @@ class StringLexingPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void configureTokenMakerInfo(TokenMakerInfo info) {
 		info.setBackticksEnabled(false);
@@ -101,9 +98,6 @@ class StringLexingPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void initializeFrom(TokenMakerInfo info) {
 		stringCB.setSelected(info.getStringsEnabled());
@@ -114,15 +108,15 @@ class StringLexingPanel extends TmmPanel {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean verifyInput() {
 		return true;
 	}
 
 
+    /**
+     * Listens for events in this panel.
+     */
 	public class Listener implements ActionListener {
 
 		@Override
@@ -152,7 +146,7 @@ class StringLexingPanel extends TmmPanel {
 			}
 		}
 
-		private final int getIndexOf(Container parent, Component c) {
+		private int getIndexOf(Container parent, Component c) {
 			for (int i=0; i<parent.getComponentCount(); i++) {
 				if (parent.getComponent(i)==c) {
 					return i;

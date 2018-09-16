@@ -27,7 +27,7 @@ class Divider extends JComponent {
 	private String text;
 
 
-	public Divider(String text) {
+	Divider(String text) {
 		this.text = text;
 	}
 

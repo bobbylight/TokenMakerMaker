@@ -9,12 +9,10 @@ import java.io.File;
  * @author Robert Futrell
  * @version 1.0
  */
-public class Utils {
-
+final class Utils {
 
 	private Utils() {
 	}
-
 
 	/**
 	 * Returns a file with a different extension.
@@ -23,7 +21,7 @@ public class Utils {
 	 * @param newExtension The new extension.
 	 * @return A file with its extension replaced by the new one.
 	 */
-	public static File getFileWithNewExtension(File file, String newExtension) {
+	static File getFileWithNewExtension(File file, String newExtension) {
 		String path = file.getAbsolutePath();
 		int lastDot = path.lastIndexOf('.');
 		if (lastDot>-1) {
