@@ -17,11 +17,11 @@ dependencies {
 }
 
 wrapper {
-	gradleVersion '4.10'
+	gradleVersion '5.0-rc-4'
 }
 
 checkstyle {
-    toolVersion = '8.11'
+    toolVersion = '8.14'
     configFile = 'config/checkstyle/checkstyle.xml' as File
 }
 
@@ -86,7 +86,7 @@ srcDistZip {
 
 task buildSourceForgeZips {
     doLast {
-        println "Building zip files for SourceForge"
+        println 'Building zip files for SourceForge'
     }
 }
 buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
