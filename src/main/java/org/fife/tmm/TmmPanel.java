@@ -108,7 +108,7 @@ abstract class TmmPanel {
 				else {
 					if (next instanceof JComponent) {
 						JComponent jc = (JComponent)next;
-						if (Boolean.TRUE==jc.getClientProperty(DONT_ENABLE)) {
+						if (Boolean.TRUE.equals(jc.getClientProperty(DONT_ENABLE))) {
 							continue;
 						}
 					}

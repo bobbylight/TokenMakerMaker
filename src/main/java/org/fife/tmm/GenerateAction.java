@@ -63,7 +63,8 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 		File outputDir = tmm.getSourceOutputDirectory();
 		if (!outputDir.isDirectory() && !outputDir.mkdirs()) {
 			// TODO: Localize me
-			JOptionPane.showMessageDialog(null, "Error creating output directory:\n" + outputDir.getAbsolutePath());
+			JOptionPane.showMessageDialog(null,
+				"Error creating output directory:\n" + outputDir.getAbsolutePath());
 			return;
 		}
 
@@ -87,7 +88,7 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 	}
 
 
-	private boolean compileJavaSource(File sourceRootDir, String sourceFile,
+	private void compileJavaSource(File sourceRootDir, String sourceFile,
 									File classDir) {
 
 		TokenMakerMaker tmm = getApplication();
@@ -112,7 +113,7 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 //				String desc = tmm.getString("Error.RSyntaxTextAreaJarNotFound");
 //				FileNotFoundException fnfe = new FileNotFoundException(desc);
 //				tmm.displayException(fnfe);
-//				return false;
+//				return;
 //			}
 //
 //		}
@@ -124,44 +125,34 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 			String title = tmm.getString("Warning.DialogTitle");
 			JOptionPane.showMessageDialog(tmm, desc, title,
 											JOptionPane.WARNING_MESSAGE);
-			return false;
+			return;
 		}
 		else if (!javac.isFile()) { // Shouldn't happen
 			String desc = tmm.getString("Error.JavacNotFile", javac.getAbsolutePath());
 			tmm.getOutputPanel().appendOutput("\n\n" + desc, ProcessOutputType.TERMINAL_ERROR);
 			tmm.displayException(new IOException(desc));
-			return false;
+			return;
 		}
 
-		boolean success = false;
+		List<String> command = new ArrayList<>();
+		command.add(javac.getAbsolutePath());
+		command.add("-classpath");
+		command.add(rstaJar.getAbsolutePath());
+		command.add("-d");
+		command.add(classDir.getAbsolutePath());
+		command.add(sourceFile);
 
-//		try {
+		String[] args = new String[command.size()];
+		args = command.toArray(args);
+		ProcessRunner pr = new ProcessRunner(args);
+		pr.setDirectory(sourceRootDir);
 
-			List<String> command = new ArrayList<String>();
-			command.add(javac.getAbsolutePath());
-			command.add("-classpath");
-			command.add(rstaJar.getAbsolutePath());
-			command.add("-d");
-			command.add(classDir.getAbsolutePath());
-			command.add(sourceFile);
+		String text = tmm.getString("Output.Compiling");
+		tmm.getOutputPanel().appendOutput("\n\n" + text, ProcessOutputType.HEADER_INFO);
 
-			String[] args = new String[command.size()];
-			args = command.toArray(args);
-			ProcessRunner pr = new ProcessRunner(args);
-			pr.setDirectory(sourceRootDir);
-
-			String text = tmm.getString("Output.Compiling");
-			tmm.getOutputPanel().appendOutput("\n\n" + text, ProcessOutputType.HEADER_INFO);
-
-			pr.setOutputListener(new CompilingOutputListener(classDir, sourceFile));
-			Thread thread = new Thread(new ProcessRunnerRunnable(pr));
-			thread.start();
-
-//		} catch () {
-//
-//		}
-
-		return success;
+		pr.setOutputListener(new CompilingOutputListener(classDir, sourceFile));
+		Thread thread = new Thread(new ProcessRunnerRunnable(pr));
+		thread.start();
 
 	}
 
@@ -172,14 +163,20 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 		String outputDir = flexFile.getParentFile().getAbsolutePath();
 
 		File javaFile = Utils.getFileWithNewExtension(flexFile, "java");
-		if (javaFile.isFile()) {
-			javaFile.delete(); // TODO: Error handling?
+		if (javaFile.isFile() && !javaFile.delete()) {
+			JOptionPane.showMessageDialog(getApplication(),
+				tmm.getString("Error.DeletingPriorJavaFile", javaFile.getAbsolutePath()),
+				tmm.getString("Error.DialogTitle"), JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		String installDir = tmm.getInstallLocation();
 		File skeletonFile = new File(installDir, "skeleton.default");
 		if (!skeletonFile.isFile()) { // Debugging in an IDE
-			skeletonFile = new File(new File("."), "src/main/dist/skeleton.default");
+			skeletonFile = new File(new File("."), "TokenMakerMaker/src/main/dist/skeleton.default");
+			if (!skeletonFile.isFile()) {
+				skeletonFile = new File(new File("."), "src/main/dist/skeleton.default");
+			}
 		}
 
 		File jflexJar = getJFlexJar(tmm);
@@ -188,9 +185,9 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 		// We'll parse the generated .java file afterwards.
 		String javaExe = tmm.getJavaExe().getAbsolutePath();
 		String[] command = { javaExe, "-cp",
-				jflexJar.getAbsolutePath(), "JFlex.Main",
-				flexFile.getAbsolutePath(), "-d", outputDir,
-				"--skel", skeletonFile.getAbsolutePath()
+			jflexJar.getAbsolutePath(), "JFlex.Main",
+			flexFile.getAbsolutePath(), "-d", outputDir,
+			"--skel", skeletonFile.getAbsolutePath()
 		};
 		final ProcessRunner pr = new ProcessRunner(command);
 		pr.setOutputListener(new JFlexOutputListener(flexFile));
@@ -218,14 +215,11 @@ class GenerateAction extends AppAction<TokenMakerMaker> {
 		if (entries.length == 1) {
 
 			try {
-				JarFile jsf = new JarFile(entries[0]);
-				try {
+				try (JarFile jsf = new JarFile(entries[0])) {
 					Manifest mf = jsf.getManifest();
 					Attributes attrs = mf.getMainAttributes();
 					String classpath = attrs.getValue("Class-Path");
 					entries = classpath.split(" ");
-				} finally {
-					jsf.close();
 				}
 			} catch (IOException ioe) {
 				ioe.printStackTrace();

@@ -25,8 +25,6 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 class TesterFrame extends JFrame {
 
-	private RSyntaxTextArea textArea;
-
 
 	TesterFrame(TokenMakerMaker app, File dir, String classFile)
 									throws Exception {
@@ -38,12 +36,12 @@ class TesterFrame extends JFrame {
 		String className = classFile.substring(0, classFile.lastIndexOf('.'));
 		className = className.replaceAll("/", ".");
 		Class<?> clazz = ucl.loadClass(className);
-		TokenMaker tm = (TokenMaker)clazz.newInstance();
+		TokenMaker tm = (TokenMaker)clazz.getDeclaredConstructor().newInstance();
 
 		JPanel cp = new JPanel(new BorderLayout());
 
 		cp.setBorder(UIUtil.getEmpty5Border());
-		textArea = new RSyntaxTextArea(20, 50);
+		RSyntaxTextArea textArea = new RSyntaxTextArea(20, 50);
 		String themeName = app.getThemeName();
 		if (themeName!=null) {
 			String res = "/org/fife/ui/rsyntaxtextarea/themes/" + themeName;

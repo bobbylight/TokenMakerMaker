@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Box;
@@ -164,11 +165,11 @@ class LoadFromFileDialog extends EscapableDialog implements ActionListener {
 			return false;
 		}
 
-		words = new ArrayList<String>();
+		words = new ArrayList<>();
 
 		try {
 
-			BufferedReader r = new BufferedReader(new FileReader(file));
+			BufferedReader r = new BufferedReader(new FileReader(file, Charset.defaultCharset()));
 			String line;
 
 			while ((line=r.readLine())!=null) {

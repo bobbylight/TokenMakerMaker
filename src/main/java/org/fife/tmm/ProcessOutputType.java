@@ -13,5 +13,5 @@ public enum ProcessOutputType {
 	STDOUT,
 	STDERR,
 	FOOTER_INFO,
-	TERMINAL_ERROR;
+	TERMINAL_ERROR
 }

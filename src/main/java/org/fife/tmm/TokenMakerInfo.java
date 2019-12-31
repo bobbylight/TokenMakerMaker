@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,7 +122,7 @@ public class TokenMakerInfo {
 
 
 	public TokenMakerInfo() {
-		flexValuesMap = new HashMap<String, String>();
+		flexValuesMap = new HashMap<>();
 	}
 
 
@@ -151,12 +153,12 @@ public class TokenMakerInfo {
 		}
 
 		File file = new File(outputDir, getClassName() + ".flex");
-		PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(file)), true);
+		PrintWriter w = new PrintWriter(new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8)), true);
 
 		InputStream in = getClass().getResourceAsStream("Template.flex");
-		BufferedReader r = new BufferedReader(new InputStreamReader(in));
+		BufferedReader r = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
-		String line = null;
+		String line;
 		while ((line=r.readLine())!=null) {
 			line = replaceTokens(line);
 			w.println(line);
@@ -473,7 +475,7 @@ public class TokenMakerInfo {
 	private static List<String> getChildElemTexts(Element elem, String childName) {
 		NodeList childNodes = elem.getElementsByTagName(childName);
 		int childCount = childNodes.getLength();
-		List<String> values = new ArrayList<String>(childCount);
+		List<String> values = new ArrayList<>(childCount);
 		for (int j=0; j<childCount; j++) {
 			Element temp = (Element)childNodes.item(j);
 			values.add(temp.getTextContent());
@@ -605,8 +607,8 @@ public class TokenMakerInfo {
 	public static TokenMakerInfo load(File xmlFile) throws IOException {
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
-		Document doc = null;
+		DocumentBuilder db;
+		Document doc;
 		try {
 			db = dbf.newDocumentBuilder();
 			//InputSource is = new InputSource(new FileReader(file));
@@ -740,8 +742,8 @@ public class TokenMakerInfo {
 			if (in==null) { // Debugging in Eclipse
 				in = new FileInputStream("src/" + resource);
 			}
-			r = new BufferedReader(new InputStreamReader(in));
-			String line = null;
+			r = new BufferedReader(new InputStreamReader(in, Charset.defaultCharset()));
+			String line;
 			while ((line=r.readLine())!=null) {
 				line = replaceTokens(line);
 				sb.append(line).append('\n');
@@ -812,7 +814,7 @@ public class TokenMakerInfo {
 
 		// Create an XML DOM structure to write to.
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = null;
+		DocumentBuilder db;
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException pce) {
@@ -962,7 +964,7 @@ public class TokenMakerInfo {
 
 		// Save to file
 		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer = null;
+		Transformer transformer;
 		try {
 			transformer = tf.newTransformer();
 		} catch (TransformerConfigurationException tce) {

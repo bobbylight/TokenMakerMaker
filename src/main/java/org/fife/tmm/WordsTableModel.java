@@ -32,7 +32,7 @@ class WordsTableModel extends DefaultTableModel {
 	}
 
 
-	public void clear() {
+	private void clear() {
 		for (int i=getRowCount()-1; i>=0; i--) {
 			removeRow(0);
 		}

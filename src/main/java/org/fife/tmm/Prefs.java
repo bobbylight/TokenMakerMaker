@@ -48,7 +48,7 @@ public class Prefs extends GUIApplicationPrefs<TokenMakerMaker> {
 		outputDir				= tmm.getSourceOutputDirectory();
 		classOutputDir			= tmm.getClassOutputDirectory();
 		theme					= tmm.getThemeName();
-		fileHistoryString		= ((MenuBar)tmm.getJMenuBar()).getFileHistoryString();
+		fileHistoryString		= ((AppMenuBar)tmm.getJMenuBar()).getFileHistoryString();
 		return this;
 	}
 
@@ -75,7 +75,7 @@ public class Prefs extends GUIApplicationPrefs<TokenMakerMaker> {
 
 		}
 
-		if (javac!=null && javac.isFile()) {
+		if (javac!=null) {
 			try {
 				javac = javac.getCanonicalFile();
 			} catch (IOException ioe) {
@@ -108,8 +108,7 @@ public class Prefs extends GUIApplicationPrefs<TokenMakerMaker> {
 
 			theme = prefs.get(THEME, DEFAULT_THEME);
 
-			String historyStr = prefs.get(HISTORY, null);
-			fileHistoryString = historyStr;
+			fileHistoryString = prefs.get(HISTORY, null);
 
 		} catch (RuntimeException re) { // FindBugs
 			throw re;

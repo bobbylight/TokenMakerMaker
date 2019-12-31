@@ -34,7 +34,7 @@ class OpenAction extends AppAction<TokenMakerMaker> {
 		if (rc!=RTextFileChooser.APPROVE_OPTION) {
 			return;
 		}
-		app.openFile(chooser.getSelectedFile().getAbsolutePath());
+		app.openFile(chooser.getSelectedFile());
 	}
 
 

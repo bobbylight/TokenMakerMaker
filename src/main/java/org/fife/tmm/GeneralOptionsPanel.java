@@ -41,9 +41,9 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	private RTextFileChooser fileChooser;
 	private RDirectoryChooser dirChooser;
 	private JComboBox<Object> themeCombo;
-	private Listener listener;
 
-	private static final String PROP_DIR		= "Directory";
+	private static final String PROP_DIR = "Directory";
+	private static final String PROP_THEME = "Theme";
 
 
 	GeneralOptionsPanel(TokenMakerMaker app, String title) {
@@ -52,7 +52,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 		this.app = app;
 		setLayout(new BorderLayout());
 		setBorder(UIUtil.getEmpty5Border());
-		listener = new Listener();
+		Listener listener = new Listener();
 
 		Box temp2 = Box.createVerticalBox();
 
@@ -113,6 +113,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 			new ThemeItem(app.getString("Options.General.Rsta.Theme.VisualStudio"), "vs.xml"),
 		};
 		themeCombo = new JComboBox<>(themeItems);
+		themeCombo.addActionListener(listener);
 		temp.add(themeCombo);
 
 		temp2.add(temp);
@@ -217,7 +218,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	@Override
 	public OptionsPanelCheckResult ensureValidInputsImpl() {
 
-		OptionsPanelCheckResult res = null;
+		OptionsPanelCheckResult res;
 
 		res = ensureValidFile(javacField);
 		if (res==null) {
@@ -313,7 +314,16 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 	/**
 	 * Listens for events in this options panel.
 	 */
-	private class Listener implements DocumentListener {
+	private class Listener implements ActionListener, DocumentListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			if (themeCombo == e.getSource()) {
+				setUnsavedChanges(true);
+				firePropertyChange(PROP_THEME, null, themeCombo.getSelectedItem());
+			}
+		}
 
 		@Override
 		public void changedUpdate(DocumentEvent e) {
@@ -347,7 +357,7 @@ class GeneralOptionsPanel extends OptionsDialogPanel implements ActionListener {
 			this.theme = theme;
 		}
 
-		public String getTheme() {
+		String getTheme() {
 			return theme;
 		}
 

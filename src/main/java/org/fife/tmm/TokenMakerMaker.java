@@ -12,7 +12,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -58,7 +57,7 @@ import net.java.balloontip.utils.TimingUtils;
 public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 							implements FileChooserOwner {
 
-	public static final String GENERATE_ACTION_KEY			= "GenerateAction";
+	private static final String GENERATE_ACTION_KEY			= "GenerateAction";
 	public static final String OPEN_ACTION_KEY				= "OpenAction";
 	public static final String OPTIONS_ACTION_KEY			= "OptionsAction";
 	public static final String SAVE_ACTION_KEY				= "SaveAction";
@@ -107,10 +106,10 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 		action.setIcon(getIcon("/options.gif"));
 		addAction(OPTIONS_ACTION_KEY, action);
 
-		action = new ExitAction<TokenMakerMaker>(this, msg, "Exit");
+		action = new ExitAction<>(this, msg, "Exit");
 		addAction(EXIT_ACTION_KEY, action);
 
-		action = new HelpAction<TokenMakerMaker>(this, msg, "Help");
+		action = new HelpAction<>(this, msg, "Help");
 		action.setIcon(getIcon("/help.gif"));
 		addAction(HELP_ACTION_KEY, action);
 
@@ -154,7 +153,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	 */
 	@Override
 	protected JMenuBar createMenuBar(Prefs prefs) {
-		return new MenuBar(this, prefs);
+		return new AppMenuBar(this, prefs);
 	}
 
 
@@ -172,8 +171,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	 */
 	@Override
 	protected StatusBar createStatusBar(Prefs prefs) {
-		StatusBar sb = new StatusBar();
-		return sb;
+		return new StatusBar();
 	}
 
 
@@ -436,14 +434,12 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 		return VERSION;
 	}
 
-
 	@Override
-	public void openFile(String fileName) {
-		File file = new File(fileName);
+	public void openFile(File file) {
 		try {
 			TokenMakerInfo tmi = TokenMakerInfo.load(file);
 			load(tmi);
-			((MenuBar)getJMenuBar()).addFileToFileHistory(file);
+			((AppMenuBar)getJMenuBar()).addFileToFileHistory(file);
 		} catch (IOException ioe) {
 			displayException(ioe);
 		}
@@ -462,7 +458,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	}
 
 
-	void load(TokenMakerInfo info) {
+	private void load(TokenMakerInfo info) {
 		for (int i=0; i<tp.getComponentCount(); i++) {
 			JPanel temp = (JPanel)tp.getComponentAt(i);
 			TmmPanel panel = (TmmPanel)temp.getClientProperty(
@@ -581,12 +577,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 		tip.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ActionListener al = new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						tip.closeBalloon();
-					}
-				};
+				ActionListener al = e1 -> tip.closeBalloon();
 				FadingUtils.fadeOutBalloon(tip, al, 400, 20);
 			}
 		});

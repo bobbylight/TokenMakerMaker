@@ -50,7 +50,7 @@ final class StyleManager {
 
 	public void install(JTextPane textArea) {
 
-		map = new HashMap<ProcessOutputType, Style>();
+		map = new HashMap<>();
 		Style defaultStyle = textArea.getStyle(StyleContext.DEFAULT_STYLE);
 
 		Style blue = textArea.addStyle("meta", defaultStyle);

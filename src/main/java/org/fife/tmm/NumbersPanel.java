@@ -26,9 +26,9 @@ public class NumbersPanel extends TmmPanel {
 	private JCheckBox intsEnabledCB;
 	private JCheckBox hexEnabledCB;
 	private JCheckBox floatsEnabledCB;
-	private JComboBox intLiteralFormatCombo;
-	private JComboBox hexLiteralFormatCombo;
-	private JComboBox floatLiteralFormatCombo;
+	private JComboBox<IntLiteralFormat> intLiteralFormatCombo;
+	private JComboBox<HexLiteralFormat> hexLiteralFormatCombo;
+	private JComboBox<FloatLiteralFormat> floatLiteralFormatCombo;
 	private SelectableLabel intLiteralSampleLabel;
 	private SelectableLabel hexLiteralSampleLabel;
 	private SelectableLabel floatLiteralSampleLabel;
@@ -110,8 +110,8 @@ public class NumbersPanel extends TmmPanel {
 	 * @param font The font for the combo box.
 	 * @return The combo box.
 	 */
-	private JComboBox createCombo(Object[] values, Font font) {
-		JComboBox<Object> combo = new JComboBox<>(values);
+	private <T> JComboBox<T> createCombo(T[] values, Font font) {
+		JComboBox<T> combo = new JComboBox<>(values);
 		combo.setFont(font);
 		combo.addActionListener(listener);
 		return combo;

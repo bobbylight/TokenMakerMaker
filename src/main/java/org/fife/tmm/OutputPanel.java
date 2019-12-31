@@ -96,7 +96,7 @@ public class OutputPanel extends TmmPanel {
 	 *
 	 * @param tabSize The new tab size, in characters.
 	 */
-	public void setTabSize(int tabSize) {
+	private void setTabSize(int tabSize) {
 
 		FontMetrics fm = textArea.getFontMetrics(textArea.getFont());
 		int charWidth = fm.charWidth('m');

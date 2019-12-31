@@ -144,7 +144,7 @@ class CommentsPanel extends TmmPanel {
 	/**
 	 * Listens for events in this panel.
 	 */
-	public class Listener implements ActionListener {
+	protected class Listener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

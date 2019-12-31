@@ -117,7 +117,7 @@ class StringLexingPanel extends TmmPanel {
     /**
      * Listens for events in this panel.
      */
-	public class Listener implements ActionListener {
+	protected static class Listener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -135,7 +135,7 @@ class StringLexingPanel extends TmmPanel {
 						else {
 							if (next instanceof JComponent) {
 								JComponent jc = (JComponent)next;
-								if (Boolean.TRUE==jc.getClientProperty(DONT_ENABLE)) {
+								if (Boolean.TRUE.equals(jc.getClientProperty(DONT_ENABLE))) {
 									continue;
 								}
 							}

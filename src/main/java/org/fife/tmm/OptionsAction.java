@@ -45,7 +45,7 @@ public class OptionsAction extends AppAction<TokenMakerMaker> {
 	private OptionsDialog createOptionsDialog() {
 
 		TokenMakerMaker app = getApplication();
-		List<OptionsDialogPanel> panels = new ArrayList<OptionsDialogPanel>();
+		List<OptionsDialogPanel> panels = new ArrayList<>();
 
 		String title = app.getString("Options.General");
 		panels.add(new GeneralOptionsPanel(app, title));

@@ -42,7 +42,7 @@ class GeneralPanel extends TmmPanel {
 				app.getString("TokenMakerType.CDerivedSyntax"),
 				app.getString("TokenMakerType.AllOthers"),
 		};
-		extendedClassCombo = new LabelValueComboBox<String, String>();
+		extendedClassCombo = new LabelValueComboBox<>();
 		extendedClassCombo.addLabelValuePair(baseClasses[0], "AbstractJFlexCTokenMaker");
 		extendedClassCombo.addLabelValuePair(baseClasses[1], "AbstractJFlexTokenMaker");
 		classCommentArea = new JTextArea(10, 50);

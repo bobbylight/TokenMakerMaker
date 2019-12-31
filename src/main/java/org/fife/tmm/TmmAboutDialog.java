@@ -17,8 +17,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -31,7 +29,6 @@ import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.border.AbstractBorder;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 
 import org.fife.ui.EscapableDialog;
 import org.fife.ui.Hyperlink;
@@ -79,12 +76,9 @@ class TmmAboutDialog extends EscapableDialog {
 
 		SelectableLabel descLabel = new SelectableLabel(
 				app.getString("Dialog.About.Desc", app.getVersionString()));
-		descLabel.addHyperlinkListener(new HyperlinkListener() {
-			@Override
-			public void hyperlinkUpdate(HyperlinkEvent e) {
-				if (e.getEventType()==HyperlinkEvent.EventType.ACTIVATED) {
-					UIUtil.browse(e.getURL().toString());
-				}
+		descLabel.addHyperlinkListener(e -> {
+			if (e.getEventType()==HyperlinkEvent.EventType.ACTIVATED) {
+				UIUtil.browse(e.getURL().toString());
 			}
 		});
 		box2.add(descLabel);
@@ -112,17 +106,9 @@ class TmmAboutDialog extends EscapableDialog {
 		cp.add(box, BorderLayout.NORTH);
 
 		JButton okButton = new JButton(app.getString("OK"));
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				escapePressed();
-			}
-		});
+		okButton.addActionListener(e -> escapePressed());
 		JButton libButton = new JButton(app.getString("Dialog.About.Libraries"));
-		libButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new LibrariesDialog().setVisible(true);
-			}
-		});
+		libButton.addActionListener(e -> new LibrariesDialog().setVisible(true));
 		Container buttons = UIUtil.createButtonFooter(okButton, libButton);
 		cp.add(buttons, BorderLayout.SOUTH);
 
@@ -146,12 +132,11 @@ class TmmAboutDialog extends EscapableDialog {
 	}
 
 
-	private JPanel addLeftAligned(Component toAdd, Container addTo) {
+	private void addLeftAligned(Component toAdd, Container addTo) {
 		JPanel temp = new JPanel(new BorderLayout());
 		temp.setOpaque(false); // For ones on white background.
 		temp.add(toAdd, BorderLayout.LINE_START);
 		addTo.add(temp);
-		return temp;
 	}
 
 

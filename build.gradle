@@ -1,28 +1,44 @@
-['java', 'checkstyle', 'distribution', 'maven', 'signing'].each { apply plugin: it }
+import static org.gradle.api.JavaVersion.current
+
+plugins {
+    id 'com.github.spotbugs' version '2.0.1'
+}
+['java', 'checkstyle', 'com.github.spotbugs', 'distribution', 'maven-publish', 'signing'].each { apply plugin: it }
+
+assert current().isJava11Compatible()
 
 group = 'com.fifesoft'
 archivesBaseName = 'tokenMakerMaker'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
 
-    compile files("${projectDir.absolutePath}/../RSyntaxTextArea/RSyntaxTextArea/build/classes/java/main")
-    compile files('lib/balloontip-1.2.1.jar', 'lib/fife.common.jar', 'lib/JFlex.jar', 'lib/miglayout-swing-5.0.jar')
-
-	compile 'de.jflex:jflex:1.4.1'
-    compile 'com.fifesoft.rtext:fife.common:2.6.3'
-    compile 'com.fifesoft:rsyntaxtextarea:3.0.0-SNAPSHOT'
-    compile 'com.miglayout:miglayout-swing:5.0'
-    compile 'net.java.balloontip:balloontip:1.2.4.1'
-	testCompile 'junit:junit:4.12'
+    implementation 'de.jflex:jflex:1.4.1'
+    implementation "com.fifesoft.rtext:fife.common:${fifeCommonVersion}"
+    implementation "com.fifesoft:rsyntaxtextarea:${rstaVersion}"
+    implementation 'com.miglayout:miglayout-swing:5.0'
+    implementation 'net.java.balloontip:balloontip:1.2.4.1'
+	testImplementation 'junit:junit:4.12'
 }
 
 wrapper {
-	gradleVersion '5.0-rc-4'
+	gradleVersion '6.0.1'
 }
 
 checkstyle {
-    toolVersion = '8.14'
+    toolVersion = '8.27'
+    configDirectory = file("$rootProject.projectDir/config/checkstyle")
     configFile = 'config/checkstyle/checkstyle.xml' as File
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 compileJava {
@@ -33,14 +49,21 @@ compileJava {
 	options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
 }
 
+ext.isReleaseVersion = !project.version.endsWith('SNAPSHOT')
+
 ext.sharedManifest = manifest {
 	attributes('Main-Class': 'org/fife/tmm/Main',
-		'Class-Path': "balloontip-1.2.4.1.jar fife.common-${version}.jar jflex-1.4.1.jar miglayout-core-5.0.jar miglayout-swing-5.0.jar rsyntaxtextarea-${version}.jar",
+		'Class-Path': "balloontip-1.2.4.1.jar fife.common-${fifeCommonVersion}.jar jflex-1.4.1.jar miglayout-core-5.0.jar miglayout-swing-5.0.jar rsyntaxtextarea-${rstaVersion}.jar",
 		'Specification-Title': 'TokenMakerMaker',
 		'Specification-Version': version,
 		'Implementation-Title': 'org.fife.ui',
 		'Implementation-Version': version)
 
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 jar {
 	manifest { from sharedManifest }
@@ -49,15 +72,15 @@ jar {
 // We use "distributions" to create the zip files uploaded to SourceForge
 distributions {
 	main {
-		baseName = 'tmm'
+        distributionBaseName = 'tmm'
 		contents {
-			from { [ "${projectDir.absolutePath}/build/libs", configurations.runtime ] }
+			from { [ "${projectDir.absolutePath}/build/libs", configurations.runtimeClasspath ] }
 			rename 'TokenMakerMaker-.*\\.jar', 'tmm.jar'
 			//rename '(jflex-.*\\.jar)', 'lib/$1'
 		}
 	}
 	src {
-		baseName = 'tmm'
+        distributionBaseName = 'tmm'
 	}
 }
 distZip.classifier = null
@@ -66,7 +89,7 @@ distZip {
 	include '**'
 	from "$projectDir/../RSyntaxTextArea/build/libs"
 	include 'rsyntaxtextarea-${version}.jar'
-	rename { return baseName + '-' + version + '/' + it }
+	rename { return "${archiveBaseName}-${archiveVersion}/${it}" }
 }
 distZip.dependsOn jar
 srcDistZip.classifier = 'src'
@@ -84,6 +107,7 @@ srcDistZip {
 	include '.settings/**'
 }
 
+// Stuff to generate and upload Maven artifacts
 task buildSourceForgeZips {
     doLast {
         println 'Building zip files for SourceForge'
@@ -91,143 +115,62 @@ task buildSourceForgeZips {
 }
 buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
 
-// Build the application
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = isReleaseVersion ? releasesRepoUrl : snapshotsRepoUrl
+            credentials { // Credentials usually kept in user's .gradle/gradle.properties
+                // We must defensively check for these properties so Travis CI build works
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : 'unknown'
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : 'unknown'
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
 
-// Stuff to generate and upload Maven artifacts
-task javadocJar (type: Jar, dependsOn: javadoc) {
-	manifest { from sharedManifest }
-	classifier = 'javadoc'
-	from javadoc.destinationDir
+            groupId = 'com.fifesoft'
+            artifactId = 'tokenmakermaker'
+            version = version
+
+            from components.java
+
+            pom {
+                name = 'TokenMakerMaker'
+                description = 'An application to easily create syntax highlighting for custom languages in RSyntaxTextArea.'
+                inceptionYear = '2003'
+                packaging = 'jar'
+                licenses {
+                    license {
+                        name = 'BSD-3-Clause'
+                        url = 'https://github.com/bobbylight/AutoComplete/blob/master/AutoComplete/src/main/dist/AutoComplete.License.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Robert Futrell'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/bobbylight/TokenMakerMaker'
+                    connection = 'scm:git:git://github.com/bobbylight/TokenMakerMaker'
+                    developerConnection = 'scm:git:git@github.com:bobbylight/TokenMakerMaker'
+                    if (isReleaseVersion) {
+                        tag = project.version
+                    }
+                }
+            }
+        }
+    }
 }
-task sourceJar (type: Jar) {
-	manifest { from sharedManifest }
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-artifacts {
-	archives jar, javadocJar, sourceJar
-}
+
 signing {
-	// Don't require signing for e.g. ./gradlew install
-	required { gradle.taskGraph.hasTask("uploadArchives") }
-	sign configurations.archives
+    // Don't require signing for e.g. ./gradlew install
+    required { gradle.taskGraph.hasTask('publish') && isReleaseVersion }
+    sign publishing.publications.maven
 }
-repositories {
-	mavenCentral()
-	maven { // Snapshot builds of RSTA artifacts
-		url 'https://oss.sonatype.org/content/repositories/snapshots'
-	}
-}
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-			if (project.hasProperty('upload') && Boolean.parseBoolean(upload)) { // gradlew -Pupload=true
-				repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-					authentication(userName: ossrhUsername, password: ossrhPassword)
-				}
-				snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-					authentication(userName: ossrhUsername, password: ossrhPassword)
-				}
-			}
-			else {
-				repository(url: 'file:///' + projectDir + '/../localMavenRepo')
-			}
-			pom {
-				groupId = 'com.fifesoft'
-				name = 'tokenmakermaker'
-				project {
-					parent {
-						groupId 'org.sonatype.oss'
-						artifactId 'oss-parent'
-						version '7'
-						relativePath ''
-					}
-					
-					groupId 'com.fifesoft'
-					artifactId 'tokenmakermaker'
-					packaging 'jar'
-					
-					name 'TokenMakerMaker'
-					description 'An application to easily create syntax highlighting for custom languages in RSyntaxTextArea.'
-					
-					inceptionYear '2003'
-					url 'http://www.fifesoft.com/rsyntaxtextarea/'
-					licenses {
-						license {
-							name 'Modified BSD License'
-							url 'http://fifesoft.com/rsyntaxtextarea/RSyntaxTextArea.License.txt'
-							distribution 'repo'
-						}
-					}
-					
-					scm {
-						url 'https://github.com/bobbylight/TokenMakerMaker'
-						connection 'scm:git:git://github.com/bobbylight/TokenMakerMaker'
-						developerConnection 'scm:git:git@github.com:bobbylight/TokenMakerMaker'
-						if (!project.version.endsWith('-SNAPSHOT')) {
-							tag project.version
-						}
-					}
-					
-					developers {
-						developer {
-							name 'Robert Futrell'
-							url 'http://www.fifesoft.com'
-							organization = 'Fifesoft' /* https://issues.gradle.org/browse/GRADLE-1200 */
-							organizationUrl 'http://www.fifesoft.com/'
-							roles {
-								role 'architect'
-								role 'developer'
-							}
-							timezone '0'
-						}
-					}
-					
-					// Manually add runtime dependencies since we don't have
-					// a multi-project build set up properly
-					dependencies {
-						dependency {
-							groupId 'com.fifesoft'
-							artifactId 'rsyntaxtextarea'
-							version project.version
-						}
-					}
-					
-					// Says to enforce 1.6 compatibility when building
-					// Doesn't work as of Gradle 2.0 due to a Groovy bug; see
-					// http://jira.codehaus.org/browse/GROOVY-7023
-					// For now, append it via XML directly
-					/*
-					build {
-						plugins {
-							plugin {
-								artifactId 'maven-compiler-plugin'
-								version '2.3.2'
-								executions {
-									execution {
-										id 'default-compile'
-										configuration {
-											source '1.6'
-											target '1.6'
-										}
-									}
-								}
-							}
-						}
-					}
-					*/
-					withXml {
-						def pluginNode = asNode().appendNode('build').appendNode('plugins').appendNode('plugin')
-						pluginNode.appendNode('artifactId', 'maven-compiler-plugin')
-						pluginNode.appendNode('version', '2.3.2')
-						def executionNode = pluginNode.appendNode('executions').appendNode('execution')
-						executionNode.appendNode('id', 'default-compile')
-						executionNode.appendNode('configuration').appendNode('source', '1.6').
-						      parent().appendNode('target', '1.6')
-					}
-				}
-			}
-		}
-	}
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
 }

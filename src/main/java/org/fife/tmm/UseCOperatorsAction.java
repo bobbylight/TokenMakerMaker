@@ -36,9 +36,9 @@ class UseCOperatorsAction extends AppAction<TokenMakerMaker> {
 	 *
 	 * @return The list of operators.
 	 */
-	public List<String> createOperatorList() {
+	private List<String> createOperatorList() {
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 
 		// Don't add trigraphs, what are the odds they want those?
 		list.add("=");
