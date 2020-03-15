@@ -1,7 +1,7 @@
 import static org.gradle.api.JavaVersion.current
 
 plugins {
-    id 'com.github.spotbugs' version '2.0.1'
+    id 'com.github.spotbugs' version '4.0.1'
 }
 ['java', 'checkstyle', 'com.github.spotbugs', 'distribution', 'maven-publish', 'signing'].each { apply plugin: it }
 
@@ -21,23 +21,37 @@ dependencies {
     implementation "com.fifesoft:rsyntaxtextarea:${rstaVersion}"
     implementation 'com.miglayout:miglayout-swing:5.0'
     implementation 'net.java.balloontip:balloontip:1.2.4.1'
-	testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.13'
 }
 
 wrapper {
-	gradleVersion '6.1'
+	gradleVersion '6.2.2'
 }
 
 checkstyle {
-    toolVersion = '8.28'
+    toolVersion = '8.30'
     configDirectory = file("$rootProject.projectDir/config/checkstyle")
     configFile = 'config/checkstyle/checkstyle.xml' as File
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+spotbugsMain {
     reports {
-        xml.enabled = false
-        html.enabled = true
+        html {
+            enabled = true
+        }
+        xml {
+            enabled = false
+        }
+    }
+}
+spotbugsTest {
+    reports {
+        html {
+            enabled = true
+        }
+        xml {
+            enabled = false
+        }
     }
 }
 
@@ -140,6 +154,7 @@ publishing {
             pom {
                 name = 'TokenMakerMaker'
                 description = 'An application to easily create syntax highlighting for custom languages in RSyntaxTextArea.'
+                url = 'http://www.fifesoft.com/rsyntaxtextarea/'
                 inceptionYear = '2003'
                 packaging = 'jar'
                 licenses {
