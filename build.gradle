@@ -1,11 +1,11 @@
 import static org.gradle.api.JavaVersion.current
 
 plugins {
-    id 'com.github.spotbugs' version '4.0.1'
+    id 'com.github.spotbugs' version '4.7.1'
 }
 ['java', 'checkstyle', 'com.github.spotbugs', 'distribution', 'maven-publish', 'signing'].each { apply plugin: it }
 
-assert current().isJava11Compatible()
+assert current().isJava12Compatible()
 
 group = 'com.fifesoft'
 archivesBaseName = 'tokenMakerMaker'
@@ -21,15 +21,15 @@ dependencies {
     implementation "com.fifesoft:rsyntaxtextarea:${rstaVersion}"
     implementation 'com.miglayout:miglayout-swing:5.0'
     implementation 'net.java.balloontip:balloontip:1.2.4.1'
-	testImplementation 'junit:junit:4.13'
+	testImplementation 'junit:junit:4.13.2'
 }
 
 wrapper {
-	gradleVersion '6.2.2'
+	gradleVersion '7.0.2'
 }
 
 checkstyle {
-    toolVersion = '8.30'
+    toolVersion = '8.43'
     configDirectory = file("$rootProject.projectDir/config/checkstyle")
     configFile = 'config/checkstyle/checkstyle.xml' as File
 }
@@ -56,8 +56,8 @@ spotbugsTest {
 }
 
 compileJava {
-	sourceCompatibility javaVersion
-	targetCompatibility javaVersion
+	sourceCompatibility javaVersion.toString()
+	targetCompatibility javaVersion.toString()
 	options.debug = true
 	options.debugOptions.debugLevel = 'source,vars,lines'
 	options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
@@ -67,7 +67,7 @@ ext.isReleaseVersion = !project.version.endsWith('SNAPSHOT')
 
 ext.sharedManifest = manifest {
 	attributes('Main-Class': 'org/fife/tmm/Main',
-		'Class-Path': "balloontip-1.2.4.1.jar fife.common-${fifeCommonVersion}.jar jflex-1.4.1.jar miglayout-core-5.0.jar miglayout-swing-5.0.jar rsyntaxtextarea-${rstaVersion}.jar",
+		'Class-Path': "balloontip-1.2.4.1.jar fife.common-${fifeCommonVersion}.jar radiance-substance-2.5.1.jar jflex-1.4.1.jar miglayout-core-5.0.jar miglayout-swing-5.0.jar rsyntaxtextarea-${rstaVersion}.jar",
 		'Specification-Title': 'TokenMakerMaker',
 		'Specification-Version': version,
 		'Implementation-Title': 'org.fife.ui',
@@ -97,37 +97,9 @@ distributions {
         distributionBaseName = 'tmm'
 	}
 }
-distZip.classifier = null
-distZip {
-	from "$projectDir/lib"
-	include '**'
-	from "$projectDir/../RSyntaxTextArea/build/libs"
-	include 'rsyntaxtextarea-${version}.jar'
-	rename { return "${archiveBaseName}-${archiveVersion}/${it}" }
-}
-distZip.dependsOn jar
-srcDistZip.classifier = 'src'
-srcDistZip {
-	from projectDir
-	include 'src/**'
-	include 'lib/**'
-	include 'build.gradle'
-	include '.classpath'
-	include '.project'
-	include 'gradle.properties'
-	include 'gradle/**/*'
-	include 'gradlew*'
-	include 'README.md'
-	include '.settings/**'
-}
-
-// Stuff to generate and upload Maven artifacts
-task buildSourceForgeZips {
-    doLast {
-        println 'Building zip files for SourceForge'
-    }
-}
-buildSourceForgeZips.dependsOn clean, jar, distZip, srcDistZip
+distTar.dependsOn jar, javadocJar, sourcesJar
+distZip.dependsOn jar, javadocJar, sourcesJar
+installDist.dependsOn jar, javadocJar, sourcesJar
 
 publishing {
     repositories {

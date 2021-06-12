@@ -72,7 +72,7 @@ public class TokenMakerMaker extends AbstractGUIApplication<Prefs>
 	private String theme;
 	private HelpDialog helpDialog;
 
-	private static final String VERSION = "3.0.0";
+	private static final String VERSION = "3.1.1";
 
 	private static final String BUNDLE_NAME	= "org.fife.tmm.TokenMakerMaker";
 

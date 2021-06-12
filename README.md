@@ -8,7 +8,7 @@ trade-off is a lack of flexibility: `TokenMakerMaker` can be used to define most
 basic language constructs (comments, keywords, strings, etc.), but it doesn't
 expose the full power of what you can do with JFlex (nor will it ever try to).
  
-Unlike all other RSTA projects, this one requires Java 11.  Since this library
+Unlike all other RSTA projects, this one requires Java 14.  Since this library
 is a tool, and not something other applications would be dependent on, this is
 not an issue.
 
