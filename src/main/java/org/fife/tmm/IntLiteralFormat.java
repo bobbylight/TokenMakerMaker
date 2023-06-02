@@ -6,7 +6,9 @@ package org.fife.tmm;
 public enum IntLiteralFormat implements NumberFormat {
 
 	FORMAT1("{Digit}+", "512"),
-	FORMAT2("{Digit}+[lL]?", "512, 512L");
+	FORMAT2("{Digit}+[lL]?", "512, 512L"),
+	FORMAT3("({Digit}|\"_\")+", "512, 1_000"),
+	FORMAT4("({Digit}|\"_\")+[lL]?", "512, 512L, 1_000, 1_000L");
 
 	private String format;
 	private String sample;
